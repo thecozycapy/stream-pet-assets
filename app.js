@@ -282,6 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     fields.forEach(field => {
+      if (field.type === 'hidden') return;
       const group = document.createElement('div');
       group.className = 'form-group';
       if (field.type === 'text') group.classList.add('full-width');

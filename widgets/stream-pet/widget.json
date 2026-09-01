@@ -1,4 +1,12 @@
 {
+  "widgetName": {
+    "type": "hidden",
+    "value": "Stream Pet Settings"
+  },
+  "widgetAuthor": {
+    "type": "hidden",
+    "value": "The Cozy Capy"
+  },
   "petName": {
     "type": "text",
     "label": "Pet Name",
