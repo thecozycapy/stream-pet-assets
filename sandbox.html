@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StreamElements Widget Sandbox</title>
+  <!-- We load standard styles for resetting -->
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+    #widget-root {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+  </style>
+  <style id="widget-styles"></style>
+</head>
+<body>
+  <div id="widget-root"></div>
+
+  <script>
+    // Initialize the simulated StreamElements environment
+    window.SE_API = {
+      // StreamElements API provides some utility methods, we can mock them here if needed
+      store: {
+        get: function(key) { return Promise.resolve(localStorage.getItem(key)); },
+        set: function(key, val) { localStorage.setItem(key, val); return Promise.resolve(); }
+      }
+    };
+
+    // Store state
+    let currentFieldData = {};
+    let channelInfo = { username: "demo_streamer" };
+    let currencyInfo = { symbol: "$" };
+
+    // Function to inject and initialize widget
+    function initWidget(html, css, js, fieldData) {
+      currentFieldData = fieldData || {};
+
+      // 1. Inject Styles
+      document.getElementById('widget-styles').textContent = css;
+
+      // 2. Inject HTML
+      const root = document.getElementById('widget-root');
+      root.innerHTML = html;
+
+      // 3. Inject and execute JS
+      // To ensure JS runs cleanly and variables aren't stuck across updates,
+      // the parent will reload the iframe. Thus, we only execute once per iframe lifecycle.
+      const scriptEl = document.createElement('script');
+      scriptEl.textContent = `
+        (function() {
+          try {
+            ${js}
+          } catch(err) {
+            console.error("Error in widget JS execution:", err);
+          }
+        })();
+      `;
+      document.body.appendChild(scriptEl);
+
+      // 4. Dispatch the 'onWidgetLoad' event
+      setTimeout(() => {
+        dispatchWidgetLoad();
+      }, 50);
+    }
+
+    function updateFields(fieldData) {
+      currentFieldData = fieldData;
+      dispatchWidgetLoad();
+    }
+
+    function dispatchWidgetLoad() {
+      // Dispatches the StreamElements load event
+      const eventDetail = {
+        fieldData: currentFieldData,
+        channel: channelInfo,
+        currency: currencyInfo
+      };
+
+      // StreamElements dispatches both on window and calls a global function onWidgetLoad if defined
+      const event = new CustomEvent('onWidgetLoad', { detail: eventDetail });
+      window.dispatchEvent(event);
+
+      if (typeof window.onWidgetLoad === 'function') {
+        try {
+          window.onWidgetLoad({ detail: eventDetail });
+        } catch(err) {
+          console.error("Error in widget's onWidgetLoad handler:", err);
+        }
+      }
+    }
+
+    function dispatchWidgetEvent(listenerName, eventData) {
+      const eventDetail = {
+        listener: listenerName,
+        event: eventData
+      };
+
+      const event = new CustomEvent('onEventReceived', { detail: eventDetail });
+      window.dispatchEvent(event);
+
+      if (typeof window.onEventReceived === 'function') {
+        try {
+          window.onEventReceived({ detail: eventDetail });
+        } catch(err) {
+          console.error("Error in widget's onEventReceived handler:", err);
+        }
+      }
+    }
+
+    // Message listener for communicating with parent window
+    window.addEventListener('message', function(event) {
+      const data = event.data;
+      if (!data || typeof data !== 'object') return;
+
+      switch(data.type) {
+        case 'INIT_WIDGET':
+          initWidget(data.html, data.css, data.js, data.fieldData);
+          break;
+        case 'UPDATE_FIELDS':
+          updateFields(data.fieldData);
+          break;
+        case 'TRIGGER_EVENT':
+          dispatchWidgetEvent(data.listener, data.event);
+          break;
+      }
+    });
+
+    // Notify parent that iframe is ready to receive data
+    window.parent.postMessage({ type: 'SANDBOX_READY' }, '*');
+  </script>
+</body>
+</html>

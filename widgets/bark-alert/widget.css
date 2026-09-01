@@ -1,0 +1,245 @@
+/* Bark Alert Box Styles */
+:root {
+  --theme-color: #e5a93b;
+  --accent-color: #ff85a2;
+  --collar-color: #ff85a2;
+  --bone-color: #fffbf2;
+  --text-color: #2c1b18;
+  --font-size: 12px;
+  --duration: 5s;
+  --font-bark: 'Outfit', 'Segoe UI', sans-serif;
+}
+
+body, html {
+  background: transparent !important;
+}
+
+#alert-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 360px;
+  height: 200px;
+  background: transparent;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#alert-container.alert-visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  animation: alert-playful-entry 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+#alert-container.alert-exit {
+  animation: alert-playful-exit 0.7s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  pointer-events: none;
+}
+
+/* Playful Puppy Jump/Roll Entry Animation */
+@keyframes alert-playful-entry {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -10%) scale(0.3) rotate(-15deg);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(-50%, -58%) scale(1.12) rotate(8deg);
+  }
+  50% {
+    transform: translate(-50%, -46%) scale(0.95) rotate(-6deg);
+  }
+  70% {
+    transform: translate(-50%, -52%) scale(1.03) rotate(3deg);
+  }
+  85% {
+    transform: translate(-50%, -49%) scale(0.98) rotate(-1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+}
+
+/* Playful Squash, Wiggle & Plunge Exit Animation */
+@keyframes alert-playful-exit {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  20% {
+    transform: translate(-50%, -46%) scale(1.08, 0.92) rotate(-6deg);
+  }
+  45% {
+    transform: translate(-50%, -55%) scale(0.92, 1.08) rotate(6deg);
+  }
+  65% {
+    transform: translate(-50%, -48%) scale(0.96) rotate(-10deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, 40%) scale(0.1) rotate(80deg);
+    opacity: 0;
+  }
+}
+
+/* PFP Circle in the back */
+.pfp-container {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 4px solid var(--theme-color);
+  background-color: #201715;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  animation: ring-pulse 2s infinite alternate;
+}
+
+#alert-container.alert-visible .pfp-container {
+  /* Playful squash/pop for PFP on entry */
+  animation: pfp-bouncy-pop 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, ring-pulse 2s infinite alternate;
+}
+
+@keyframes pfp-bouncy-pop {
+  0% { transform: translateX(-50%) scale(0.1); }
+  55% { transform: translateX(-50%) scale(1.18); }
+  75% { transform: translateX(-50%) scale(0.93); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
+@keyframes ring-pulse {
+  0% { border-color: var(--theme-color); box-shadow: 0 0 10px rgba(229, 169, 59, 0.4); }
+  100% { border-color: var(--accent-color); box-shadow: 0 0 20px rgba(255, 133, 162, 0.6); }
+}
+
+.pfp-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Dog Collar overlay */
+.collar-wrapper {
+  position: absolute;
+  top: 78px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 136px;
+  height: 50px;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.collar-strap {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border-radius: 50%;
+  /* Curved bottom band representing collar */
+  border-bottom: 14px solid var(--collar-color);
+  /* Gold outline borders on both sides of the strap */
+  box-shadow: inset 0 -2px 0 var(--theme-color), 0 2px 0 var(--theme-color);
+  position: absolute;
+  top: -10px;
+  left: 0;
+}
+
+.collar-pendant {
+  position: absolute;
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  width: 22px;
+  height: 22px;
+  background-color: var(--theme-color);
+  border: 2.5px solid var(--bone-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  animation: tag-swing 2.5s infinite ease-in-out;
+}
+
+@keyframes tag-swing {
+  0%, 100% { transform: translateX(-50%) rotate(-10deg); }
+  50% { transform: translateX(-50%) rotate(10deg); }
+}
+
+/* Dog Bone in the front */
+.bone-container {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  filter: drop-shadow(0 0 2px var(--theme-color)) drop-shadow(0 6px 15px rgba(0, 0, 0, 0.45));
+}
+
+#alert-container.alert-visible .bone-container {
+  /* Cute bone tail-wagging wiggle animation */
+  animation: bone-wag 2s infinite ease-in-out 0.85s;
+}
+
+@keyframes bone-wag {
+  0%, 100% { transform: translateX(-50%) rotate(0deg); }
+  25% { transform: translateX(-50%) rotate(-2.5deg) translateY(-1px); }
+  75% { transform: translateX(-50%) rotate(2.5deg) translateY(1px); }
+}
+
+.bone-shaft {
+  background-color: var(--bone-color);
+  min-height: 40px;
+  height: auto;
+  width: 230px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  position: relative;
+  z-index: 5;
+}
+
+.bone-joint {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  background-color: var(--bone-color);
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.joint-top-left     { left: -12px; top: -9px; }
+.joint-bottom-left  { left: -12px; bottom: -9px; }
+.joint-top-right    { right: -12px; top: -9px; }
+.joint-bottom-right { right: -12px; bottom: -9px; }
+
+#alert-message-text {
+  font-family: var(--font-bark);
+  font-size: var(--font-size);
+  font-weight: 800;
+  color: var(--text-color);
+  text-align: center;
+  line-height: 1.25;
+  width: 100%;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}

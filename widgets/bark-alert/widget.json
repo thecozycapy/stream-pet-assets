@@ -1,0 +1,113 @@
+{
+  "previewMode": {
+    "type": "dropdown",
+    "label": "Preview Mode (Always Show)",
+    "value": "yes",
+    "options": {
+      "yes": "Always Show (For Customizing)",
+      "no": "Hide After Alert (For Stream)"
+    }
+  },
+  "alwaysShowOverlay": {
+    "type": "dropdown",
+    "label": "Stream Visibility Behavior",
+    "value": "no",
+    "options": {
+      "no": "Disappear After Alert",
+      "yes": "Always Show (Return to Awaiting Adoption)"
+    }
+  },
+  "showDefaultText": {
+    "type": "dropdown",
+    "label": "Show Default Text on Load",
+    "value": "yes",
+    "options": {
+      "yes": "Show Default Text",
+      "no": "Start Blank (No Text)"
+    }
+  },
+  "defaultMessage": {
+    "type": "text",
+    "label": "Default Text on Load",
+    "value": "Awaiting adoption..."
+  },
+  "showAvatar": {
+    "type": "dropdown",
+    "label": "Show Twitch Avatar",
+    "value": "yes",
+    "options": {
+      "yes": "Show Avatar",
+      "no": "Hide Avatar"
+    }
+  },
+  "showCollar": {
+    "type": "dropdown",
+    "label": "Show Dog Collar Overlay",
+    "value": "yes",
+    "options": {
+      "yes": "Show Collar",
+      "no": "Hide Collar"
+    }
+  },
+  "themeColor": {
+    "type": "colorpicker",
+    "label": "Gold Border & Medal Color",
+    "value": "#e5a93b"
+  },
+  "accentColor": {
+    "type": "colorpicker",
+    "label": "Collar Outer Glow Color",
+    "value": "#ff85a2"
+  },
+  "collarColor": {
+    "type": "colorpicker",
+    "label": "Collar Strap Color",
+    "value": "#ff85a2"
+  },
+  "boneColor": {
+    "type": "colorpicker",
+    "label": "Dog Bone Fill Color",
+    "value": "#fffbf2"
+  },
+  "textColor": {
+    "type": "colorpicker",
+    "label": "Alert Text Color",
+    "value": "#2c1b18"
+  },
+  "fontSize": {
+    "type": "slider",
+    "label": "Text Font Size (px)",
+    "value": 12,
+    "min": 8,
+    "max": 24,
+    "step": 1
+  },
+  "alertDuration": {
+    "type": "slider",
+    "label": "Alert Display Duration (Sec)",
+    "value": 5,
+    "min": 2,
+    "max": 15,
+    "step": 1
+  },
+  "followerMessage": {
+    "type": "text",
+    "label": "Follower Alert Message",
+    "value": "{name} gave a belly rub!"
+  },
+  "subMessage": {
+    "type": "text",
+    "label": "Subscriber Alert Message",
+    "value": "{name} adopted a puppy!"
+  },
+  "cheerMessage": {
+    "type": "text",
+    "label": "Cheer Alert Message",
+    "value": "{name} sent {amount} barks!"
+  },
+  "tipMessage": {
+    "type": "text",
+    "label": "Tip Alert Message",
+    "value": "{name} bought {amount} treats!"
+  }
+}

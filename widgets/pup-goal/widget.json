@@ -1,0 +1,57 @@
+{
+  "goalTitle": {
+    "type": "text",
+    "label": "Goal Title",
+    "value": "Treat Goal"
+  },
+  "goalTarget": {
+    "type": "number",
+    "label": "Goal Target Value",
+    "value": 100
+  },
+  "currentCount": {
+    "type": "number",
+    "label": "Starting Value",
+    "value": 0
+  },
+  "dogImage": {
+    "type": "text",
+    "label": "Dog Image URL",
+    "value": "Dog.png"
+  },
+  "bgColor": {
+    "type": "colorpicker",
+    "label": "Background Color",
+    "value": "#201714"
+  },
+  "borderColor": {
+    "type": "colorpicker",
+    "label": "Border Color",
+    "value": "#382a24"
+  },
+  "labelColor": {
+    "type": "colorpicker",
+    "label": "Goal Title Color",
+    "value": "#d1c3b7"
+  },
+  "valuesColor": {
+    "type": "colorpicker",
+    "label": "Values Text Color",
+    "value": "#ffffff"
+  },
+  "trackColor": {
+    "type": "colorpicker",
+    "label": "Track BG Color",
+    "value": "#2e211d"
+  },
+  "barColor": {
+    "type": "colorpicker",
+    "label": "Progress Bar Color",
+    "value": "#e5a93b"
+  },
+  "percentageColor": {
+    "type": "colorpicker",
+    "label": "Percentage Color",
+    "value": "#e5a93b"
+  }
+}

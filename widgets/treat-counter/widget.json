@@ -1,0 +1,43 @@
+{
+  "bowlColor": {
+    "type": "colorpicker",
+    "label": "Bowl Base Color",
+    "value": "#e5a93b"
+  },
+  "treatType": {
+    "type": "dropdown",
+    "label": "Dropped Treat Type",
+    "value": "mixed",
+    "options": {
+      "mixed": "Mixed Treats",
+      "bone": "Bones Only",
+      "biscuit": "Biscuits Only",
+      "heart": "Hearts Only",
+      "star": "Stars Only"
+    }
+  },
+  "maxTreats": {
+    "type": "slider",
+    "label": "Max Accumulation Limit",
+    "value": 50,
+    "min": 10,
+    "max": 100,
+    "step": 5
+  },
+  "gravityPower": {
+    "type": "slider",
+    "label": "Gravity Strength",
+    "value": 35,
+    "min": 10,
+    "max": 80,
+    "step": 5
+  },
+  "bounciness": {
+    "type": "slider",
+    "label": "Bounciness (Restitution)",
+    "value": 55,
+    "min": 10,
+    "max": 90,
+    "step": 5
+  }
+}

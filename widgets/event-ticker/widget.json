@@ -1,0 +1,42 @@
+{
+  "bannerPosition": {
+    "type": "dropdown",
+    "label": "Banner Screen Position",
+    "value": "bottom",
+    "options": {
+      "top": "Top of Screen",
+      "bottom": "Bottom of Screen"
+    }
+  },
+  "bgColor": {
+    "type": "colorpicker",
+    "label": "Banner Background Color",
+    "value": "#201714"
+  },
+  "bgOpacity": {
+    "type": "slider",
+    "label": "Background Opacity (%)",
+    "value": 85,
+    "min": 10,
+    "max": 100,
+    "step": 5
+  },
+  "textColor": {
+    "type": "colorpicker",
+    "label": "Text Base Color",
+    "value": "#ffffff"
+  },
+  "accentColor": {
+    "type": "colorpicker",
+    "label": "Accent / Highlight Color",
+    "value": "#e5a93b"
+  },
+  "scrollSpeed": {
+    "type": "slider",
+    "label": "Scroll Duration (Seconds - Lower is Faster)",
+    "value": 20,
+    "min": 10,
+    "max": 45,
+    "step": 1
+  }
+}

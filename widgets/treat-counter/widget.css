@@ -1,0 +1,123 @@
+/* Physics Dog Bowl Treat Counter Styles */
+:root {
+  --bowl-color: #e5a93b;
+  --text-color: #ffffff;
+  --font-bowl: 'Outfit', 'Inter', sans-serif;
+}
+
+body, html {
+  background: transparent !important;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+#bowl-widget-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-bowl);
+  overflow: hidden;
+}
+
+#physics-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+#foreground-bowl-container {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 250px;
+  height: 80px;
+  z-index: 50;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.35));
+}
+
+#bowl-lip {
+  width: 270px;
+  height: 14px;
+  background: linear-gradient(90deg, 
+    color-mix(in srgb, var(--bowl-color), #ffffff 25%) 0%, 
+    var(--bowl-color) 50%, 
+    color-mix(in srgb, var(--bowl-color), #000000 20%) 100%
+  );
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#bowl-body {
+  width: 240px;
+  flex: 1;
+  background: linear-gradient(180deg, 
+    var(--bowl-color) 0%, 
+    color-mix(in srgb, var(--bowl-color), #000000 25%) 100%
+  );
+  clip-path: polygon(8% 0%, 92% 0%, 100% 100%, 0% 100%);
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#bowl-tag {
+  font-size: 1.1rem;
+  opacity: 0.85;
+  margin-bottom: 2px;
+  animation: paw-wiggle 3s infinite ease-in-out alternate;
+}
+
+@keyframes paw-wiggle {
+  0% { transform: rotate(-8deg) scale(0.95); }
+  100% { transform: rotate(8deg) scale(1.05); }
+}
+
+#treat-count-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-color);
+  line-height: 1.1;
+}
+
+#treat-count-number {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+#treat-count-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  opacity: 0.75;
+  text-transform: uppercase;
+}
+
+/* Treat scale pop trigger */
+#foreground-bowl-container.pop-alert {
+  animation: bowl-pop 0.35s ease-out;
+}
+
+@keyframes bowl-pop {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.08) translateY(-4px); }
+}

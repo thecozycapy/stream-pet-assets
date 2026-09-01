@@ -1,0 +1,384 @@
+/* Interactive On-Screen Stream Pet Styles */
+:root {
+  --primary-color: #e5a93b;
+  --pet-scale: 1.0;
+  --font-pet: 'Outfit', 'Inter', sans-serif;
+}
+
+body, html {
+  background: transparent !important;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+#pet-widget-container {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  font-family: var(--font-pet);
+}
+
+#pet-wrapper {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  transform: scale(var(--widget-scale, 1.0));
+  transform-origin: bottom center;
+  transition: transform 0.3s ease;
+}
+
+/* Glassmorphism Speech / Action Bubble */
+.speech-bubble {
+  position: absolute;
+  bottom: 175px; /* Sits above the 160px character container */
+  left: 50%;
+  transform: scale(0.8) translateY(10px) translateX(-50%);
+  transform-origin: bottom center;
+  background: var(--bubble-bg-color, rgba(32, 23, 20, 0.9));
+  border: 2px solid var(--bubble-border-color, var(--primary-color, #e5a93b));
+  border-radius: 15px;
+  padding: 8px 16px;
+  color: var(--bubble-text-color, white);
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+  transition: opacity 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.speech-bubble.active {
+  opacity: 1;
+  transform: scale(1) translateY(0) translateX(-50%);
+}
+
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px 8px 0;
+  border-style: solid;
+  border-color: var(--bubble-border-color, var(--primary-color, #e5a93b)) transparent;
+  display: block;
+  width: 0;
+}
+
+/* Pet Bed Image Container (Larger size to fit the dog) */
+#pet-bed {
+  width: 280px;
+  height: 105px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#bed-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+#bed-name-text {
+  position: absolute;
+  bottom: var(--tag-y-offset, 25px); /* Positioned right on the front tag plate of the bed image */
+  left: 50%;
+  transform: translateX(calc(-50% + var(--tag-x-offset, 11px))) rotate(var(--tag-rotate, -5deg));
+  font-family: var(--font-pet);
+  font-weight: 900;
+  font-size: var(--tag-name-scale, 5px);
+  color: var(--tag-text-color, #3c2415); /* Dynamic woody brown text to blend with name tag graphics */
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.45); /* Gives a debossed/realistic carved effect */
+  text-align: center;
+  pointer-events: none;
+  width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  z-index: 10;
+  letter-spacing: 0.5px;
+  transition: bottom 0.1s ease, transform 0.1s ease, font-size 0.1s ease;
+}
+
+/* Dog Character Container (Horizontally adjustable and vertically adjustable via slider) */
+#pet-character-container {
+  position: absolute;
+  bottom: var(--dog-y-offset, 10px);
+  left: 50%;
+  transform: translateX(calc(-50% + var(--dog-x-offset, 0px)));
+  width: 160px;
+  height: 160px;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
+  transition: bottom 0.1s ease, transform 0.1s ease; /* Smooth transition when sliding position */
+}
+
+.sleep-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#pet-character {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  transform-origin: bottom center;
+}
+
+#pet-img {
+  width: 140px; /* Sized to sit inside the bed boundaries */
+  height: 140px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.12));
+}
+
+/* Idle Breathing / Tail Wag Animation */
+.idle-breath {
+  animation: pet-idle 1.8s infinite ease-in-out alternate;
+}
+
+@keyframes pet-idle {
+  0% {
+    transform: scale(1, 1) translateY(0);
+  }
+  100% {
+    transform: scale(1.03, 0.97) translateY(2px);
+  }
+}
+
+
+
+/* Action animations triggered by Javascript */
+.wiggle-pat {
+  animation: pet-pat 0.8s ease-in-out 2;
+}
+
+@keyframes pet-pat {
+  0%, 100% { transform: scale(1, 1) rotate(0deg); }
+  25% { transform: scale(1.1, 0.9) rotate(-6deg); }
+  75% { transform: scale(0.95, 1.05) rotate(6deg); }
+}
+
+
+
+.jump-active {
+  animation: pet-jump 0.6s ease-in-out;
+}
+
+@keyframes pet-jump {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  50% { transform: translateY(-40px) scale(0.95, 1.05); }
+}
+
+.bark-active {
+  animation: pet-bark 0.15s infinite alternate ease-in-out;
+}
+
+@keyframes pet-bark {
+  0% { transform: scale(1, 1) rotate(0deg); }
+  100% { transform: scale(1.08, 0.92) rotate(4deg); }
+}
+
+/* Patting Hand configuration */
+.pat-hand {
+  position: absolute;
+  top: -120px; /* Starts above the dog container */
+  left: 50%;
+  transform: translateX(-50%) translateY(45px) rotate(-30deg);
+  width: 55px; /* Perfect size for the hand */
+  height: 55px;
+  object-fit: contain;
+  display: none;
+  z-index: 15;
+  pointer-events: none;
+  transition: transform 0.1s ease;
+}
+
+.pat-hand.active {
+  display: block;
+  animation: pet-hand-pat 1.6s ease-in-out forwards;
+}
+
+@keyframes pet-hand-pat {
+  0% {
+    top: -120px;
+    transform: translateX(-50%) translateY(45px) rotate(-30deg);
+    opacity: 0;
+  }
+  15% {
+    top: -20px; /* Sits right on the dog's head */
+    transform: translateX(-50%) translateY(45px) rotate(0deg);
+    opacity: 1;
+  }
+  /* Snug patting wiggles */
+  25% {
+    top: -10px; /* Presses down */
+    transform: translateX(-50%) translateY(45px) rotate(-12deg);
+  }
+  35% {
+    top: -25px; /* Lifts slightly */
+    transform: translateX(-50%) translateY(45px) rotate(8deg);
+  }
+  45% {
+    top: -10px; /* Presses down second time */
+    transform: translateX(-50%) translateY(45px) rotate(-8deg);
+  }
+  55% {
+    top: -25px; /* Lifts slightly */
+    transform: translateX(-50%) translateY(45px) rotate(5deg);
+  }
+  65% {
+    top: -10px; /* Presses down third time */
+    transform: translateX(-50%) translateY(45px) rotate(-5deg);
+  }
+  75% {
+    top: -20px; /* Sits still on head */
+    transform: translateX(-50%) translateY(45px) rotate(0deg);
+  }
+  85% {
+    top: -60px; /* Begins receding */
+    transform: translateX(-50%) translateY(45px) rotate(-15deg);
+    opacity: 0.8;
+  }
+  100% {
+    top: -120px; /* Recedes fully */
+    transform: translateX(-50%) translateY(45px) rotate(-30deg);
+    opacity: 0;
+  }
+}
+
+/* Falling Treat configuration */
+.falling-treat {
+  position: absolute;
+  top: -260px; /* Starts above the tall wrapper container */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  display: none;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.falling-treat.active {
+  display: block;
+  animation: drop-treat 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes drop-treat {
+  0% {
+    top: -260px;
+    transform: translateX(-50%) rotate(0deg);
+  }
+  100% {
+    top: 20px; /* Lands exactly at the dog's mouth level in the 160px container */
+    transform: translateX(-50%) rotate(120deg);
+  }
+}
+
+/* Heart particles for pat reaction */
+.heart-particle {
+  position: absolute;
+  color: #ff5e7e;
+  font-size: 1.1rem;
+  pointer-events: none;
+  animation: float-heart 1.2s ease-out forwards;
+  z-index: 300;
+}
+
+@keyframes float-heart {
+  0% {
+    transform: translate(0, 0) scale(0.4) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(1) rotate(var(--dr));
+    opacity: 0;
+  }
+}
+
+/* Floating "Nom" text particles for treat catch */
+.nom-particle {
+  position: absolute;
+  color: #e5a93b;
+  font-family: var(--font-pet);
+  font-weight: 800;
+  font-size: 1.15rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  pointer-events: none;
+  animation: float-nom 1.2s ease-out forwards;
+  z-index: 300;
+}
+
+@keyframes float-nom {
+  0% {
+    transform: translate(0, 0) scale(0.6) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(1.1) rotate(var(--dr));
+    opacity: 0;
+  }
+}
+
+/* Floating "Bark" text particles for bark reaction */
+.bark-particle {
+  position: absolute;
+  color: var(--primary-color, #e5a93b);
+  font-family: var(--font-pet);
+  font-weight: 900;
+  font-size: 1.2rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  pointer-events: none;
+  animation: float-bark 1s ease-out forwards;
+  z-index: 300;
+}
+
+@keyframes float-bark {
+  0% {
+    transform: translate(0, 0) scale(0.5) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(1.15) rotate(var(--dr));
+    opacity: 0;
+  }
+}

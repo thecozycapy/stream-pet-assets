@@ -1,0 +1,53 @@
+{
+  "textColor": {
+    "type": "colorpicker",
+    "label": "Message Text Color",
+    "value": "#2f2824"
+  },
+  "textOpacity": {
+    "type": "slider",
+    "label": "Text Opacity (Percentage)",
+    "value": 100,
+    "min": 10,
+    "max": 100,
+    "step": 5
+  },
+  "bubbleColor": {
+    "type": "colorpicker",
+    "label": "Bone Bubble Color",
+    "value": "#fffbf2"
+  },
+  "bubbleOpacity": {
+    "type": "slider",
+    "label": "Bubble Opacity (Percentage)",
+    "value": 95,
+    "min": 10,
+    "max": 100,
+    "step": 5
+  },
+  "showBadges": {
+    "type": "dropdown",
+    "label": "Show Puppy Badges",
+    "value": "yes",
+    "options": {
+      "yes": "Show Badges",
+      "no": "Hide Badges"
+    }
+  },
+  "maxMessages": {
+    "type": "slider",
+    "label": "Maximum Stored Messages",
+    "value": 6,
+    "min": 3,
+    "max": 15,
+    "step": 1
+  },
+  "fadeDuration": {
+    "type": "slider",
+    "label": "Message Stay Duration (Sec, 0=Never)",
+    "value": 15,
+    "min": 0,
+    "max": 60,
+    "step": 1
+  }
+}

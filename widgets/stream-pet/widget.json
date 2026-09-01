@@ -1,0 +1,104 @@
+{
+  "petName": {
+    "type": "text",
+    "label": "Pet Name",
+    "value": "Rusty"
+  },
+  "selectedDog": {
+    "type": "dropdown",
+    "label": "Select Pet Breed",
+    "value": "Dog 1.png",
+    "options": {
+      "Dog 1.png": "Dog 1",
+      "Dog 2.png": "Dog 2",
+      "Dog 3.png": "Dog 3",
+      "Dog 4.png": "Dog 4",
+      "Dog 5.png": "Dog 5"
+    }
+  },
+  "widgetScale": {
+    "type": "slider",
+    "label": "Widget Size Scale (%)",
+    "value": 200,
+    "min": 50,
+    "max": 350,
+    "step": 5
+  },
+  "dogXOffset": {
+    "type": "slider",
+    "label": "Dog Horizontal Position",
+    "value": 0,
+    "min": -80,
+    "max": 80,
+    "step": 1
+  },
+  "dogYOffset": {
+    "type": "slider",
+    "label": "Dog Vertical Position",
+    "value": 10,
+    "min": -50,
+    "max": 80,
+    "step": 1
+  },
+  "tagNameScale": {
+    "type": "slider",
+    "label": "Name Tag Text Size (px)",
+    "value": 5,
+    "min": 1,
+    "max": 15,
+    "step": 1
+  },
+  "tagXOffset": {
+    "type": "slider",
+    "label": "Name Tag Horizontal Position",
+    "value": 11,
+    "min": -100,
+    "max": 100,
+    "step": 1
+  },
+  "tagYOffset": {
+    "type": "slider",
+    "label": "Name Tag Vertical Position",
+    "value": 25,
+    "min": -20,
+    "max": 80,
+    "step": 1
+  },
+  "tagRotate": {
+    "type": "slider",
+    "label": "Name Tag Rotation (deg)",
+    "value": -5,
+    "min": -45,
+    "max": 45,
+    "step": 1
+  },
+  "tagTextColor": {
+    "type": "colorpicker",
+    "label": "Name Tag Text Color",
+    "value": "#3c2415"
+  },
+  "bubbleTextColor": {
+    "type": "colorpicker",
+    "label": "Speech Bubble Text Color",
+    "value": "#ffffff"
+  },
+  "bubbleBgColor": {
+    "type": "colorpicker",
+    "label": "Speech Bubble BG Color",
+    "value": "#201714"
+  },
+  "bubbleBorderColor": {
+    "type": "colorpicker",
+    "label": "Speech Bubble Border Color",
+    "value": "#e5a93b"
+  },
+  "idleAnimation": {
+    "type": "dropdown",
+    "label": "Idle Animation",
+    "value": "yes",
+    "options": {
+      "yes": "Bouncing (Idle Breath)",
+      "no": "Still (Static)"
+    }
+  }
+}
