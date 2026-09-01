@@ -86,7 +86,15 @@
       const eventDetail = {
         fieldData: currentFieldData,
         channel: channelInfo,
-        currency: currencyInfo
+        currency: currencyInfo,
+        session: {
+          data: {
+            "follower-total": { count: 85 },
+            "follower-month": { count: 35 },
+            "follower-week": { count: 14 },
+            "follower-session": { count: 4 }
+          }
+        }
       };
 
       // StreamElements dispatches both on window and calls a global function onWidgetLoad if defined

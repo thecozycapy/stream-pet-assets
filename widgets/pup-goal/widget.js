@@ -10,35 +10,70 @@ function parseCleanNumber(val, fallback = 0) {
   if (val === null || val === undefined) return fallback;
   if (typeof val === 'number') return isNaN(val) ? fallback : Math.round(val);
   if (typeof val === 'string') {
-    // Strip all currency symbols, dollar signs, and letters
     val = val.replace(/[^0-9]/g, '');
   }
   const parsed = parseInt(val, 10);
   return isNaN(parsed) ? fallback : parsed;
 }
 
+// Safely extract numeric count from any StreamElements session metric structure
+function getMetricCount(session, keys) {
+  if (!session) return null;
+  for (const key of keys) {
+    if (session[key] !== undefined && session[key] !== null) {
+      const val = session[key];
+      if (typeof val === 'number') return val;
+      if (typeof val === 'string') {
+        const p = parseCleanNumber(val, null);
+        if (p !== null) return p;
+      }
+      if (typeof val === 'object') {
+        if (val.count !== undefined) return parseCleanNumber(val.count, null);
+        if (val.amount !== undefined) return parseCleanNumber(val.amount, null);
+      }
+    }
+  }
+  return null;
+}
+
+function resolveFollowerCount(sessionObj, trackType, fallbackCount) {
+  if (!sessionObj) return fallbackCount;
+  
+  // Unpack session.data or session
+  const session = (sessionObj && sessionObj.data) ? { ...sessionObj, ...sessionObj.data } : sessionObj;
+  let count = null;
+  
+  if (trackType === 'total') {
+    count = getMetricCount(session, ['follower-total', 'follower_total', 'followers-total', 'follower-all-time', 'total-followers']);
+  } else if (trackType === 'week') {
+    count = getMetricCount(session, ['follower-week', 'follower_week', 'followers-week', 'follower-7days', 'follower-week-count']);
+  } else if (trackType === 'month') {
+    count = getMetricCount(session, ['follower-month', 'follower_month', 'followers-month', 'follower-30days', 'follower-month-count']);
+  } else if (trackType === 'session') {
+    count = getMetricCount(session, ['follower-session', 'follower_session', 'followers-session']);
+  }
+  
+  return (count !== null && !isNaN(count)) ? count : fallbackCount;
+}
+
 window.addEventListener('onWidgetLoad', function(obj) {
   const fields = (obj && obj.detail && obj.detail.fieldData) ? obj.detail.fieldData : {};
-  const session = (obj && obj.detail && obj.detail.session && obj.detail.session.data) ? obj.detail.session.data : {};
+  const session = (obj && obj.detail && obj.detail.session) ? obj.detail.session : {};
   
   goalTitle = fields.goalTitle || "Follower Goal";
   goalTarget = parseCleanNumber(fields.goalTarget, 100);
   followerTrackType = fields.followerTrackType || "session";
-  currentCount = parseCleanNumber(fields.currentCount, 0);
+  const manualCount = parseCleanNumber(fields.currentCount, 0);
   
-  // If user triggered manual reset in fields
+  // If user triggered manual reset in fields settings
   if (fields.resetGoal === "yes" || fields.resetGoal === "reset") {
     currentCount = 0;
   } 
-  // Otherwise load from StreamElements session metrics if requested
-  else if (followerTrackType === 'total' && session['follower-total']) {
-    currentCount = parseCleanNumber(session['follower-total'].count, currentCount);
-  } else if (followerTrackType === 'week' && session['follower-week']) {
-    currentCount = parseCleanNumber(session['follower-week'].count, currentCount);
-  } else if (followerTrackType === 'month' && session['follower-month']) {
-    currentCount = parseCleanNumber(session['follower-month'].count, currentCount);
-  } else if (session['follower-goal'] && session['follower-goal'].amount !== undefined && followerTrackType !== 'session') {
-    currentCount = parseCleanNumber(session['follower-goal'].amount, currentCount);
+  // Otherwise resolve from StreamElements session metrics if requested
+  else if (followerTrackType !== 'session') {
+    currentCount = resolveFollowerCount(session, followerTrackType, manualCount);
+  } else {
+    currentCount = manualCount;
   }
   
   // Set goal title
@@ -121,18 +156,17 @@ window.addEventListener('onEventReceived', function(obj) {
 
 // Listen for live session metric updates from StreamElements
 window.addEventListener('onSessionUpdate', function(obj) {
-  if (!obj || !obj.detail || !obj.detail.session) return;
-  const session = obj.detail.session;
+  if (!obj || !obj.detail) return;
+  const session = (obj.detail.session && obj.detail.session.data) 
+    ? obj.detail.session.data 
+    : (obj.detail.session || {});
   
-  if (followerTrackType === 'total' && session['follower-total']) {
-    currentCount = parseCleanNumber(session['follower-total'].count, currentCount);
-    updateGoalUI();
-  } else if (followerTrackType === 'week' && session['follower-week']) {
-    currentCount = parseCleanNumber(session['follower-week'].count, currentCount);
-    updateGoalUI();
-  } else if (followerTrackType === 'month' && session['follower-month']) {
-    currentCount = parseCleanNumber(session['follower-month'].count, currentCount);
-    updateGoalUI();
+  if (followerTrackType !== 'session') {
+    const updatedCount = resolveFollowerCount(session, followerTrackType, null);
+    if (updatedCount !== null) {
+      currentCount = updatedCount;
+      updateGoalUI();
+    }
   }
 });
 
