@@ -2,6 +2,7 @@
 let treatType = "mixed"; // mixed, bones, biscuits, hearts, stars
 let gravity = 0.35;
 let widgetScale = 1.0;
+let maxGoal = 100;
 
 let canvas, ctx;
 let particles = [];
@@ -10,37 +11,12 @@ let totalCount = 0;
 // Animation loop request ID
 let animFrameId = null;
 
-// Fixed relative coordinates for resting treats inside the bowl (layered progressively per 25 treats)
-const RESTING_PILES = [
-  // Layer 1 (0 to 25 treats: Bottom inner floor)
-  { relX: -55, relY: -35, rot: -0.2, type: 'bone' },
-  { relX: -25, relY: -32, rot: 0.3, type: 'biscuit' },
-  { relX: 0, relY: -35, rot: -0.1, type: 'star' },
-  { relX: 25, relY: -32, rot: 0.4, type: 'heart' },
-  { relX: 55, relY: -35, rot: -0.3, type: 'bone' },
-
-  // Layer 2 (26 to 50 treats: Mid-low pile level)
-  { relX: -45, relY: -50, rot: 0.5, type: 'biscuit' },
-  { relX: -18, relY: -48, rot: -0.4, type: 'bone' },
-  { relX: 10, relY: -52, rot: 0.2, type: 'heart' },
-  { relX: 42, relY: -49, rot: -0.2, type: 'star' },
-
-  // Layer 3 (51 to 75 treats: Mid-high pile level)
-  { relX: -35, relY: -65, rot: -0.3, type: 'heart' },
-  { relX: -5, relY: -68, rot: 0.1, type: 'bone' },
-  { relX: 28, relY: -66, rot: -0.5, type: 'biscuit' },
-
-  // Layer 4 (76 to 100+ treats: Top rim brim level)
-  { relX: -22, relY: -82, rot: 0.4, type: 'star' },
-  { relX: 5, relY: -84, rot: -0.2, type: 'heart' },
-  { relX: 25, relY: -80, rot: 0.3, type: 'bone' }
-];
-
 window.addEventListener('onWidgetLoad', function(obj) {
   const fields = (obj && obj.detail && obj.detail.fieldData) ? obj.detail.fieldData : {};
   
   treatType = fields.treatType || "mixed";
   gravity = (parseInt(fields.gravityPower) || 35) / 100;
+  maxGoal = parseInt(fields.maxGoal) || 100;
   
   const scaleVal = fields.widgetScale !== undefined ? parseInt(fields.widgetScale) : 100;
   widgetScale = (scaleVal || 100) / 100;
@@ -51,20 +27,8 @@ window.addEventListener('onWidgetLoad', function(obj) {
     document.documentElement.style.setProperty('--text-color', fields.textColor);
   }
   
-  const bowlImg = document.getElementById('bowl-img');
-  if (bowlImg) {
-    const cdnUrl = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%20bowl.png";
-    const imgTest = new Image();
-    imgTest.onload = function() {
-      bowlImg.src = cdnUrl;
-    };
-    imgTest.onerror = function() {
-      bowlImg.src = "Dog bowl.png";
-    };
-    imgTest.src = cdnUrl;
-  }
-  
   initPhysics();
+  updateCounterDisplay();
 });
 
 window.addEventListener('onEventReceived', function(obj) {
@@ -118,6 +82,36 @@ function updateCounterDisplay() {
   if (numEl) {
     numEl.textContent = totalCount;
   }
+  
+  // Calculate goal percentage progress
+  const percent = maxGoal > 0 ? (totalCount / maxGoal) * 100 : 0;
+  
+  let targetImgName = "Dog bowl.png";
+  if (percent >= 100) {
+    targetImgName = "Dog bowl 100.png";
+  } else if (percent >= 75) {
+    targetImgName = "Dog bowl 75.png";
+  } else if (percent >= 50) {
+    targetImgName = "Dog bowl 50.png";
+  } else if (percent >= 25) {
+    targetImgName = "Dog bowl 25.png";
+  }
+  
+  const bowlImg = document.getElementById('bowl-img');
+  if (bowlImg && bowlImg.dataset.activeName !== targetImgName) {
+    bowlImg.dataset.activeName = targetImgName;
+    const encodedName = targetImgName.replace(/ /g, '%20');
+    const cdnUrl = `https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/${encodedName}`;
+    
+    const imgTest = new Image();
+    imgTest.onload = function() {
+      bowlImg.src = cdnUrl;
+    };
+    imgTest.onerror = function() {
+      bowlImg.src = targetImgName;
+    };
+    imgTest.src = cdnUrl;
+  }
 }
 
 // Spawns treats falling from top towards the bowl
@@ -142,7 +136,10 @@ function spawnTreats(count) {
       radius: baseRadius,
       angle: Math.random() * Math.PI * 2,
       angularVelocity: Math.random() * 0.1 - 0.05,
-      type: design
+      type: design,
+      state: "falling",
+      alpha: 1.0,
+      scale: 1.0
     });
   }
 }
@@ -188,59 +185,15 @@ function updatePhysics() {
   }
 }
 
-function drawRestingPile() {
-  if (totalCount <= 0) return;
-  
-  const centerX = canvas.width / 2;
-  const bowlBaseY = canvas.height - 24;
-  
-  // Progressively show more resting treats in the bowl per 25 treats milestone
-  // 1-25 treats: fills Layer 1 (1-5 treats)
-  // 26-50 treats: fills Layer 2 (6-9 treats)
-  // 51-75 treats: fills Layer 3 (10-12 treats)
-  // 76-100+ treats: fills Layer 4 (13-15 treats - full brim!)
-  const visibleCount = Math.min(RESTING_PILES.length, Math.ceil(totalCount / 6.6));
-  
-  for (let i = 0; i < visibleCount; i++) {
-    const item = RESTING_PILES[i];
-    
-    // Default or user-selected treat design
-    let design = item.type;
-    if (treatType !== "mixed") {
-      design = treatType;
-    }
-    
-    const p = {
-      x: centerX + (item.relX * widgetScale),
-      y: bowlBaseY + (item.relY * widgetScale),
-      angle: item.rot,
-      radius: 11 * widgetScale,
-      type: design,
-      scale: 1.0
-    };
-    
-    ctx.save();
-    ctx.globalAlpha = 0.95;
-    if (p.type === "bone") drawBone(p);
-    else if (p.type === "biscuit") drawBiscuit(p);
-    else if (p.type === "star") drawStar(p);
-    else if (p.type === "heart") drawHeart(p);
-    ctx.restore();
-  }
-}
-
 function drawPhysics() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  // 1. Render the accumulated resting treat pile inside the bowl
-  drawRestingPile();
-  
-  // 2. Render active falling treats in foreground
+  // Render active falling treats
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
     
     ctx.save();
-    ctx.globalAlpha = 1.0;
+    ctx.globalAlpha = Math.max(0, Math.min(1, p.alpha));
     
     if (p.type === "bone") {
       drawBone(p);
@@ -256,12 +209,12 @@ function drawPhysics() {
   }
 }
 
-// Drawing primitives scaled to widgetScale
+// Drawing primitives scaled to widgetScale and particle fade scale
 function drawBone(p) {
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(p.angle);
-  const s = (p.scale || 1) * (p.radius / 12);
+  const s = p.scale * (p.radius / 12);
   ctx.scale(s, s);
   
   ctx.fillStyle = "#fffbf2";
@@ -286,7 +239,7 @@ function drawBiscuit(p) {
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(p.angle);
-  const s = (p.scale || 1) * (p.radius / 12);
+  const s = p.scale * (p.radius / 12);
   ctx.scale(s, s);
   
   ctx.fillStyle = "#cbb29b";
@@ -312,7 +265,7 @@ function drawStar(p) {
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(p.angle);
-  const s = (p.scale || 1) * (p.radius / 12);
+  const s = p.scale * (p.radius / 12);
   ctx.scale(s, s);
   
   ctx.fillStyle = "#f5d142";
@@ -322,7 +275,7 @@ function drawStar(p) {
   ctx.beginPath();
   for (let i = 0; i < 5; i++) {
     ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * 12, Math.sin((18 + i * 72) * Math.PI / 180) * 12);
-    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * 5.5, Math.sin((54 + i * 72) * Math.PI / 180) * 5.5);
+    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * 5.5, Math.sin((54 + i * 72) * Math.PI / 180) * (5.5));
   }
   ctx.closePath();
   ctx.fill();
@@ -335,7 +288,7 @@ function drawHeart(p) {
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(p.angle);
-  const s = (p.scale || 1) * (p.radius / 12);
+  const s = p.scale * (p.radius / 12);
   ctx.scale(s, s);
   
   ctx.fillStyle = "#ff6b8b";
