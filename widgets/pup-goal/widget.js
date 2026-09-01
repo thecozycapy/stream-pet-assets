@@ -4,22 +4,38 @@ let goalTarget = 100;
 let currentCount = 0;
 let dogImage = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog.png";
 
-function parseNumber(val, fallback = 0) {
+function parseCleanNumber(val, fallback = 0) {
+  if (val === null || val === undefined) return fallback;
+  if (typeof val === 'number') return isNaN(val) ? fallback : Math.floor(val);
   if (typeof val === 'string') {
     val = val.replace(/[^0-9]/g, '');
+    if (val === '') return fallback;
   }
   const parsed = parseInt(val, 10);
   return isNaN(parsed) ? fallback : parsed;
 }
 
 window.addEventListener('onWidgetLoad', function(obj) {
-  const fields = obj.detail.fieldData;
-  if (!fields) return;
+  const fields = (obj && obj.detail && obj.detail.fieldData) ? obj.detail.fieldData : {};
   
   goalTitle = fields.goalTitle || "Follower Goal";
-  goalTarget = parseNumber(fields.goalTarget, 100);
-  currentCount = parseNumber(fields.currentCount, 0);
+  goalTarget = parseCleanNumber(fields.goalTarget, 100);
+  currentCount = parseCleanNumber(fields.currentCount, 0);
   dogImage = fields.dogImage || "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog.png";
+  
+  // Check if StreamElements session data has active follower goal data
+  if (obj.detail && obj.detail.session && obj.detail.session.data) {
+    const seGoal = obj.detail.session.data['follower-goal'] || obj.detail.session.data['follower-latest'];
+    if (seGoal) {
+      if (seGoal.amount !== undefined && seGoal.amount > 0) {
+        currentCount = parseCleanNumber(seGoal.amount, currentCount);
+      } else if (seGoal.current !== undefined && seGoal.current > 0) {
+        currentCount = parseCleanNumber(seGoal.current, currentCount);
+      } else if (seGoal.count !== undefined && seGoal.count > 0) {
+        currentCount = parseCleanNumber(seGoal.count, currentCount);
+      }
+    }
+  }
   
   // Set labels
   const labelEl = document.getElementById('goal-label');
@@ -46,18 +62,31 @@ window.addEventListener('onEventReceived', function(obj) {
   const listener = obj.detail.listener;
   const event = obj.detail.event;
   
-  if (listener === 'follower-latest') {
+  // Handle Follower events
+  if (listener === 'follower-latest' || listener === 'follow' || listener === 'follower') {
     currentCount++;
     updateGoalUI();
-  } else if (listener === 'follower-goal') {
-    if (event && event.amount !== undefined) {
-      currentCount = parseNumber(event.amount, currentCount);
+  } 
+  // Handle StreamElements Goal update events
+  else if (listener === 'follower-goal' || listener === 'goal' || listener === 'goal-update') {
+    if (event) {
+      if (event.amount !== undefined && parseCleanNumber(event.amount) > currentCount) {
+        currentCount = parseCleanNumber(event.amount, currentCount);
+      } else if (event.current !== undefined && parseCleanNumber(event.current) > currentCount) {
+        currentCount = parseCleanNumber(event.current, currentCount);
+      } else if (event.count !== undefined && parseCleanNumber(event.count) > currentCount) {
+        currentCount = parseCleanNumber(event.count, currentCount);
+      } else {
+        currentCount++;
+      }
     } else {
       currentCount++;
     }
     updateGoalUI();
-  } else if (listener === 'simulate-increment') {
-    const amt = (event && event.amount) ? parseNumber(event.amount, 1) : 1;
+  } 
+  // Handle Simulator events
+  else if (listener === 'simulate-increment') {
+    const amt = (event && event.amount) ? parseCleanNumber(event.amount, 1) : 1;
     currentCount += amt;
     updateGoalUI();
   } else if (listener === 'simulate-reset') {
@@ -70,14 +99,22 @@ function updateGoalUI() {
   if (currentCount < 0) currentCount = 0;
   if (currentCount > goalTarget) currentCount = goalTarget;
   
-  // Update progress texts (Clean follower count without currency symbols)
+  // Update progress texts (pure numbers, zero currency signs)
   const valuesText = document.getElementById('goal-values');
   const percentText = document.getElementById('goal-percentage');
-  if (valuesText) valuesText.textContent = `${currentCount} / ${goalTarget}`;
+  
+  const displayCurrent = String(currentCount).replace(/[^0-9]/g, '');
+  const displayTarget = String(goalTarget).replace(/[^0-9]/g, '');
+  
+  if (valuesText) {
+    valuesText.textContent = `${displayCurrent} / ${displayTarget}`;
+  }
   
   const percentage = goalTarget > 0 ? (currentCount / goalTarget) : 0;
-  const percentageRounded = Math.round(percentage * 100);
-  if (percentText) percentText.textContent = `${percentageRounded}%`;
+  const percentageRounded = Math.min(100, Math.round(percentage * 100));
+  if (percentText) {
+    percentText.textContent = `${percentageRounded}%`;
+  }
   
   // Update Progress fill and Dog position
   const fill = document.getElementById('progress-bar-fill');
