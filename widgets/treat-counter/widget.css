@@ -1,7 +1,8 @@
-/* Physics Dog Bowl Treat Counter Styles */
+/* Dog Bowl Treat Counter Styles */
 :root {
   --bowl-color: #e5a93b;
   --text-color: #ffffff;
+  --widget-scale: 1;
   --font-bowl: 'Outfit', 'Inter', sans-serif;
 }
 
@@ -20,6 +21,9 @@ body, html {
   height: 100%;
   font-family: var(--font-bowl);
   overflow: hidden;
+  transform: scale(var(--widget-scale, 1));
+  transform-origin: bottom center;
+  transition: transform 0.2s ease;
 }
 
 #physics-canvas {
@@ -34,81 +38,51 @@ body, html {
 
 #foreground-bowl-container {
   position: absolute;
-  bottom: 24px;
+  bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
-  width: 250px;
-  height: 80px;
-  z-index: 50;
+  width: 260px;
+  z-index: 20; /* Render bowl image over physics canvas so treats drop INSIDE the bowl rim */
   pointer-events: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.35));
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,0.4));
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-#bowl-lip {
-  width: 270px;
-  height: 14px;
-  background: linear-gradient(90deg, 
-    color-mix(in srgb, var(--bowl-color), #ffffff 25%) 0%, 
-    var(--bowl-color) 50%, 
-    color-mix(in srgb, var(--bowl-color), #000000 20%) 100%
-  );
-  border-radius: 7px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-#bowl-body {
-  width: 240px;
-  flex: 1;
-  background: linear-gradient(180deg, 
-    var(--bowl-color) 0%, 
-    color-mix(in srgb, var(--bowl-color), #000000 25%) 100%
-  );
-  clip-path: polygon(8% 0%, 92% 0%, 100% 100%, 0% 100%);
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-#bowl-tag {
-  font-size: 1.1rem;
-  opacity: 0.85;
-  margin-bottom: 2px;
-  animation: paw-wiggle 3s infinite ease-in-out alternate;
-}
-
-@keyframes paw-wiggle {
-  0% { transform: rotate(-8deg) scale(0.95); }
-  100% { transform: rotate(8deg) scale(1.05); }
+#bowl-img {
+  width: 260px;
+  height: auto;
+  display: block;
+  object-fit: contain;
 }
 
 #treat-count-display {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
   color: var(--text-color);
   line-height: 1.1;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
 }
 
 #treat-count-number {
-  font-size: 1.6rem;
+  font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: 0.5px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 #treat-count-label {
-  font-size: 0.62rem;
+  font-size: 0.65rem;
   font-weight: 800;
   letter-spacing: 2px;
-  opacity: 0.75;
+  opacity: 0.9;
   text-transform: uppercase;
 }
 
@@ -119,5 +93,5 @@ body, html {
 
 @keyframes bowl-pop {
   0%, 100% { transform: translateX(-50%) scale(1); }
-  50% { transform: translateX(-50%) scale(1.08) translateY(-4px); }
+  50% { transform: translateX(-50%) scale(1.08) translateY(-6px); }
 }

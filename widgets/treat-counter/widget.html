@@ -1,17 +1,14 @@
-<!-- Physics-Based Dog Bowl Treat Counter HTML -->
+<!-- Dog Bowl Treat Counter HTML -->
 <div id="bowl-widget-container">
-  <!-- Dynamic physics canvas overlay -->
+  <!-- Dynamic physics canvas overlay for falling treats -->
   <canvas id="physics-canvas"></canvas>
 
-  <!-- Foreground visual dog bowl representation -->
+  <!-- Foreground custom Dog Bowl image representation -->
   <div id="foreground-bowl-container">
-    <div id="bowl-lip"></div>
-    <div id="bowl-body">
-      <div id="bowl-tag">🐾</div>
-      <div id="treat-count-display">
-        <span id="treat-count-number">0</span>
-        <span id="treat-count-label">TREATS</span>
-      </div>
+    <img id="bowl-img" src="https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%20bowl.png" alt="Dog Bowl">
+    <div id="treat-count-display">
+      <span id="treat-count-number">0</span>
+      <span id="treat-count-label">TREATS</span>
     </div>
   </div>
 </div>

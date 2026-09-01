@@ -1,9 +1,9 @@
-// Physics-Based Dog Bowl Treat Counter Logic
-let bowlColor = "#e5a93b";
-let treatType = "mixed"; // mixed, bones, biscuits, hearts, stars
+// Dog Bowl Treat Counter Logic
+let treatType = "mixed"; // mixed, bone, biscuit, heart, star
 let maxTreats = 50;
 let gravity = 0.35;
 let bounciness = 0.55;
+let widgetScale = 1.0;
 
 let canvas, ctx;
 let particles = [];
@@ -13,17 +13,16 @@ let totalCount = 0;
 let animFrameId = null;
 
 window.addEventListener('onWidgetLoad', function(obj) {
-  const fields = obj.detail.fieldData;
-  if (!fields) return;
+  const fields = (obj && obj.detail && obj.detail.fieldData) ? obj.detail.fieldData : {};
   
-  bowlColor = fields.bgColor || fields.bowlColor || "#e5a93b";
   treatType = fields.treatType || "mixed";
   maxTreats = parseInt(fields.maxTreats) || 50;
   gravity = (parseInt(fields.gravityPower) || 35) / 100;
   bounciness = (parseInt(fields.bounciness) || 55) / 100;
+  widgetScale = (parseInt(fields.widgetScale) || 100) / 100;
   
   // Set custom CSS variables
-  document.documentElement.style.setProperty('--bowl-color', bowlColor);
+  document.documentElement.style.setProperty('--widget-scale', widgetScale);
   
   initPhysics();
 });
@@ -82,7 +81,7 @@ function updateCounterDisplay() {
   }
 }
 
-// Spawns multiple treats falling from the top
+// Spawns multiple treats falling from the top directly into the bowl
 function spawnTreats(count) {
   // Trigger bowl pop animation
   const bowlContainer = document.getElementById('foreground-bowl-container');
@@ -92,7 +91,7 @@ function spawnTreats(count) {
     bowlContainer.classList.add('pop-alert');
   }
 
-  const centerX = canvas.width / 2;
+  const centerX = canvas ? (canvas.width / 2) : (window.innerWidth / 2);
   
   for (let i = 0; i < count; i++) {
     if (particles.length >= maxTreats) {
@@ -107,13 +106,13 @@ function spawnTreats(count) {
       design = types[Math.floor(Math.random() * types.length)];
     }
     
-    // Spawn centered above the bowl with random scatter
+    // Spawn centered above the bowl with random scatter so they drop INTO the bowl
     particles.push({
-      x: centerX + (Math.random() * 80 - 40),
+      x: centerX + (Math.random() * 60 - 30),
       y: -20 - (i * 25), // stagger spawn heights if multi-spawning
-      vx: Math.random() * 4 - 2,
+      vx: Math.random() * 3 - 1.5,
       vy: Math.random() * 2 + 1,
-      radius: 12,
+      radius: 11,
       angle: Math.random() * Math.PI * 2,
       angularVelocity: Math.random() * 0.1 - 0.05,
       type: design
@@ -125,7 +124,7 @@ function spawnTreats(count) {
   updateCounterDisplay();
 }
 
-// Rigid boundary and circle-circle collision solver
+// Rigid boundary and circle-circle collision solver for Dog Bowl
 function physicsLoop() {
   updatePhysics();
   drawPhysics();
@@ -133,23 +132,21 @@ function physicsLoop() {
 }
 
 function updatePhysics() {
+  if (!canvas) return;
+  
   const centerX = canvas.width / 2;
-  const bowlY = canvas.height - 28;
+  const bowlY = canvas.height - 45;
   
-  // Floor boundaries of the bowl
-  const bowlFloorLeft = centerX - 85;
-  const bowlFloorRight = centerX + 85;
+  // Floor boundaries of the dog bowl opening
+  const bowlFloorLeft = centerX - 75;
+  const bowlFloorRight = centerX + 75;
   
-  // Wall boundaries: slanted lines representing the sides of the bowl
-  // Left wall: from (centerX-85, bowlY) to (centerX-120, bowlY-55)
-  // Right wall: from (centerX+85, bowlY) to (centerX+120, bowlY-55)
-
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
     
     // Apply gravity
     p.vy += gravity;
-    p.vy *= 0.99; // slight damping/drag
+    p.vy *= 0.99; // drag
     p.vx *= 0.99;
     
     // Update coordinates
@@ -157,26 +154,7 @@ function updatePhysics() {
     p.y += p.vy;
     p.angle += p.angularVelocity;
     
-    // 1. Collide with screen bottom boundary (for treats that miss the bowl entirely)
-    const floorLimit = canvas.height - p.radius;
-    if (p.y > floorLimit) {
-      p.y = floorLimit;
-      p.vy = -p.vy * bounciness;
-      p.vx *= 0.8; // ground friction
-      p.angularVelocity *= 0.8;
-    }
-    
-    // Collide with screen walls (left/right)
-    if (p.x < p.radius) {
-      p.x = p.radius;
-      p.vx = -p.vx * bounciness;
-    } else if (p.x > canvas.width - p.radius) {
-      p.x = canvas.width - p.radius;
-      p.vx = -p.vx * bounciness;
-    }
-    
-    // 2. Collide with Bowl Interior Cup Boundaries
-    // Floor of the bowl
+    // 1. Collide with Bowl Interior Floor
     if (p.y > bowlY - p.radius && p.x > bowlFloorLeft && p.x < bowlFloorRight) {
       p.y = bowlY - p.radius;
       p.vy = -p.vy * bounciness;
@@ -184,61 +162,66 @@ function updatePhysics() {
       p.angularVelocity *= 0.8;
     }
     
-    // Left slanted wall of the bowl
-    // We compute simple line boundary intersection
-    // Slanted line from (centerX-120, bowlY-55) to (centerX-85, bowlY)
-    const x1 = centerX - 120;
-    const y1 = bowlY - 55;
-    const x2 = centerX - 85;
-    const y2 = bowlY;
+    // 2. Collide with Slanted Left Wall of the Dog Bowl
+    const lx1 = centerX - 115;
+    const ly1 = bowlY - 60;
+    const lx2 = centerX - 75;
+    const ly2 = bowlY;
     
-    // Simple box check first
-    if (p.y > y1 - p.radius && p.y < y2 && p.x > x1 - p.radius && p.x < x2 + p.radius) {
-      // Distance from circle center to slanted line
-      const lineLen = Math.hypot(x2 - x1, y2 - y1);
-      const nx = -(y2 - y1) / lineLen; // normal
-      const ny = (x2 - x1) / lineLen;
-      
-      // Projection of vector from point 1 to ball center onto normal
-      const dot = (p.x - x1) * nx + (p.y - y1) * ny;
+    if (p.y > ly1 - p.radius && p.y < ly2 && p.x > lx1 - p.radius && p.x < lx2 + p.radius) {
+      const lineLen = Math.hypot(lx2 - lx1, ly2 - ly1);
+      const nx = -(ly2 - ly1) / lineLen;
+      const ny = (lx2 - lx1) / lineLen;
+      const dot = (p.x - lx1) * nx + (p.y - ly1) * ny;
       if (dot < p.radius) {
-        // Collide and bounce off slanted left wall
         p.x += nx * (p.radius - dot);
         p.y += ny * (p.radius - dot);
-        
-        // Reflect velocity
         const vDot = p.vx * nx + p.vy * ny;
         p.vx -= 2 * vDot * nx * bounciness;
         p.vy -= 2 * vDot * ny * bounciness;
       }
     }
     
-    // Right slanted wall of the bowl
-    // Slanted line from (centerX+120, bowlY-55) to (centerX+85, bowlY)
-    const rx1 = centerX + 120;
-    const ry1 = bowlY - 55;
-    const rx2 = centerX + 85;
+    // 3. Collide with Slanted Right Wall of the Dog Bowl
+    const rx1 = centerX + 115;
+    const ry1 = bowlY - 60;
+    const rx2 = centerX + 75;
     const ry2 = bowlY;
     
-    if (p.y > ry1 - p.radius && p.y < ry2 && p.x > ry2 - p.radius && p.x < rx1 + p.radius) {
+    if (p.y > ry1 - p.radius && p.y < ry2 && p.x > rx2 - p.radius && p.x < rx1 + p.radius) {
       const lineLen = Math.hypot(rx2 - rx1, ry2 - ry1);
-      const rnx = (ry2 - ry1) / lineLen; // normal
+      const rnx = (ry2 - ry1) / lineLen;
       const rny = -(rx2 - rx1) / lineLen;
-      
       const dot = (p.x - rx1) * rnx + (p.y - ry1) * rny;
       if (dot < p.radius) {
-        // Collide and bounce off slanted right wall
         p.x += rnx * (p.radius - dot);
         p.y += rny * (p.radius - dot);
-        
         const vDot = p.vx * rnx + p.vy * rny;
         p.vx -= 2 * vDot * rnx * bounciness;
         p.vy -= 2 * vDot * rny * bounciness;
       }
     }
+    
+    // 4. Fallback screen bottom collision
+    const floorLimit = canvas.height - p.radius;
+    if (p.y > floorLimit) {
+      p.y = floorLimit;
+      p.vy = -p.vy * bounciness;
+      p.vx *= 0.8;
+      p.angularVelocity *= 0.8;
+    }
+    
+    // Screen side boundaries
+    if (p.x < p.radius) {
+      p.x = p.radius;
+      p.vx = -p.vx * bounciness;
+    } else if (p.x > canvas.width - p.radius) {
+      p.x = canvas.width - p.radius;
+      p.vx = -p.vx * bounciness;
+    }
   }
   
-  // 3. Resolve Particle-to-Particle stack collisions
+  // 5. Resolve Particle-to-Particle collisions inside the bowl
   for (let i = 0; i < particles.length; i++) {
     for (let j = i + 1; j < particles.length; j++) {
       let p1 = particles[i];
@@ -250,30 +233,26 @@ function updatePhysics() {
       let minDist = p1.radius + p2.radius;
       
       if (dist < minDist) {
-        if (dist === 0) continue; // avoid division by zero
+        if (dist === 0) continue;
         
-        // Push apart
         let overlap = minDist - dist;
         let nx = dx / dist;
         let ny = dy / dist;
         
-        // Equal displacement
         p1.x -= nx * overlap * 0.5;
         p1.y -= ny * overlap * 0.5;
         p2.x += nx * overlap * 0.5;
         p2.y += ny * overlap * 0.5;
         
-        // Elastic impulse bounce
         let kx = p1.vx - p2.vx;
         let ky = p1.vy - p2.vy;
-        let pVal = 2 * (nx * kx + ny * ky) / 2; // mass = 1
+        let pVal = 2 * (nx * kx + ny * ky) / 2;
         
         p1.vx -= nx * pVal * bounciness;
         p1.vy -= ny * pVal * bounciness;
         p2.vx += nx * pVal * bounciness;
         p2.vy += ny * pVal * bounciness;
         
-        // Slightly transfer angular rotations on bump
         const temp = p1.angularVelocity;
         p1.angularVelocity = p2.angularVelocity * 0.5;
         p2.angularVelocity = temp * 0.5;
@@ -283,9 +262,9 @@ function updatePhysics() {
 }
 
 function drawPhysics() {
+  if (!ctx || !canvas) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  // Render treats
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
     
@@ -301,7 +280,6 @@ function drawPhysics() {
   }
 }
 
-// Drawing primitives for cartoon treats
 function drawBone(p) {
   ctx.save();
   ctx.translate(p.x, p.y);
@@ -311,11 +289,9 @@ function drawBone(p) {
   ctx.strokeStyle = "#8d5b4c";
   ctx.lineWidth = 1.5;
   
-  // Center shaft
   ctx.fillRect(-10, -3, 20, 6);
   ctx.strokeRect(-10, -3, 20, 6);
   
-  // End joints
   ctx.beginPath();
   ctx.arc(-10, -3, 4, 0, Math.PI * 2);
   ctx.arc(-10, 3, 4, 0, Math.PI * 2);
@@ -341,7 +317,6 @@ function drawBiscuit(p) {
   ctx.fill();
   ctx.stroke();
   
-  // Chocolate chips
   ctx.fillStyle = "#5c4033";
   ctx.beginPath();
   ctx.arc(-4, -3, 1.5, 0, Math.PI * 2);

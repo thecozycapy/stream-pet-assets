@@ -1,8 +1,12 @@
 {
-  "bowlColor": {
-    "type": "colorpicker",
-    "label": "Bowl Base Color",
-    "value": "#e5a93b"
+  "widgetScale": {
+    "type": "slider",
+    "label": "Widget Size Scale (%)",
+    "value": 100,
+    "min": 50,
+    "max": 300,
+    "step": 5,
+    "group": "Bowl Settings"
   },
   "treatType": {
     "type": "dropdown",
@@ -14,7 +18,8 @@
       "biscuit": "Biscuits Only",
       "heart": "Hearts Only",
       "star": "Stars Only"
-    }
+    },
+    "group": "Bowl Settings"
   },
   "maxTreats": {
     "type": "slider",
@@ -22,7 +27,8 @@
     "value": 50,
     "min": 10,
     "max": 100,
-    "step": 5
+    "step": 5,
+    "group": "Physics Settings"
   },
   "gravityPower": {
     "type": "slider",
@@ -30,7 +36,8 @@
     "value": 35,
     "min": 10,
     "max": 80,
-    "step": 5
+    "step": 5,
+    "group": "Physics Settings"
   },
   "bounciness": {
     "type": "slider",
@@ -38,6 +45,7 @@
     "value": 55,
     "min": 10,
     "max": 90,
-    "step": 5
+    "step": 5,
+    "group": "Physics Settings"
   }
 }

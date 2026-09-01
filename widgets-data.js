@@ -54,7 +54,7 @@ const WIDGETS_DATA = [
   },
   {
     id: "treat-counter",
-    title: "Physics Dog Bowl",
+    title: "Dog Bowl",
     category: "alerts",
     tags: ["Physics", "Treats", "Dog Bowl", "Bouncy"],
     description: "A digital dog bowl on screen where biscuits or bones fall from the top of the stream and bounce into the bowl whenever someone bits, subs, or follows.",
