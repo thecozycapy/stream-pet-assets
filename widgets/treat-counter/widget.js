@@ -5,19 +5,26 @@ let widgetScale = 1.0;
 let treatGoal = 100;
 
 let followerTreats = 1;
-let subTreats = 10;
+let subTreats = 5;
 let cheerTreats = 5;
 let tipTreats = 5;
 
 let canvas, ctx;
 let particles = [];
-let totalCount = 0;
+
+// Persistent treat count across StreamElements field reloads
+let totalCount = parseInt(localStorage.getItem('dog_bowl_count') || '0', 10);
+if (isNaN(totalCount)) totalCount = 0;
 
 // Animation loop request ID
 let animFrameId = null;
 
 window.addEventListener('onWidgetLoad', function(obj) {
   const fields = (obj && obj.detail && obj.detail.fieldData) ? obj.detail.fieldData : {};
+  
+  // Restore persistent count
+  totalCount = parseInt(localStorage.getItem('dog_bowl_count') || '0', 10);
+  if (isNaN(totalCount)) totalCount = 0;
   
   treatType = fields.treatType || "mixed";
   gravity = (parseInt(fields.gravityPower) || 35) / 100;
@@ -38,7 +45,6 @@ window.addEventListener('onWidgetLoad', function(obj) {
   }
   
   // Preserve current count and update bowl image & display on setting changes
-  updateBowlImage();
   updateCounterDisplay();
   initPhysics();
 });
@@ -100,6 +106,7 @@ function resizeCanvas() {
 function resetBowl() {
   particles = [];
   totalCount = 0;
+  localStorage.setItem('dog_bowl_count', '0');
   updateCounterDisplay();
 }
 
@@ -108,6 +115,7 @@ function updateCounterDisplay() {
   if (numEl) {
     numEl.textContent = totalCount;
   }
+  localStorage.setItem('dog_bowl_count', totalCount.toString());
   updateBowlImage();
 }
 
