@@ -27,6 +27,30 @@
     },
     "group": "General Settings"
   },
+  "followerTreats": {
+    "type": "number",
+    "label": "Treats per Follower",
+    "value": 1,
+    "group": "Treat Rewards"
+  },
+  "subTreats": {
+    "type": "number",
+    "label": "Treats per Subscriber",
+    "value": 10,
+    "group": "Treat Rewards"
+  },
+  "cheerTreats": {
+    "type": "number",
+    "label": "Treats per 100 Bits (Cheer)",
+    "value": 5,
+    "group": "Treat Rewards"
+  },
+  "tipTreats": {
+    "type": "number",
+    "label": "Treats per $1 Tip",
+    "value": 5,
+    "group": "Treat Rewards"
+  },
   "maxTreats": {
     "type": "slider",
     "label": "Max Accumulation Limit",
@@ -34,7 +58,7 @@
     "min": 10,
     "max": 100,
     "step": 5,
-    "group": "General Settings"
+    "group": "Physics Settings"
   },
   "gravityPower": {
     "type": "slider",

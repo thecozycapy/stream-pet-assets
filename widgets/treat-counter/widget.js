@@ -4,6 +4,11 @@ let gravity = 0.35;
 let widgetScale = 1.0;
 let treatGoal = 100;
 
+let followerTreats = 1;
+let subTreats = 10;
+let cheerTreats = 5;
+let tipTreats = 5;
+
 let canvas, ctx;
 let particles = [];
 let totalCount = 0;
@@ -17,6 +22,11 @@ window.addEventListener('onWidgetLoad', function(obj) {
   treatType = fields.treatType || "mixed";
   gravity = (parseInt(fields.gravityPower) || 35) / 100;
   treatGoal = parseInt(fields.treatGoal) || 100;
+  
+  followerTreats = fields.followerTreats !== undefined ? parseInt(fields.followerTreats) : 1;
+  subTreats = fields.subTreats !== undefined ? parseInt(fields.subTreats) : 10;
+  cheerTreats = fields.cheerTreats !== undefined ? parseInt(fields.cheerTreats) : 5;
+  tipTreats = fields.tipTreats !== undefined ? parseInt(fields.tipTreats) : 5;
   
   const scaleVal = fields.widgetScale !== undefined ? parseInt(fields.widgetScale) : 100;
   widgetScale = (scaleVal || 100) / 100;
@@ -37,14 +47,17 @@ window.addEventListener('onEventReceived', function(obj) {
   const event = obj.detail.event;
   
   if (listener === 'follower-latest') {
-    spawnTreats(1);
+    spawnTreats(followerTreats);
   } else if (listener === 'subscriber-latest') {
-    const amount = (event && event.amount) ? parseInt(event.amount) : 10;
-    spawnTreats(amount);
+    spawnTreats(subTreats);
   } else if (listener === 'cheer-latest') {
-    spawnTreats(5);
+    const bits = (event && event.amount) ? parseInt(event.amount) : 100;
+    const mult = Math.max(1, Math.floor(bits / 100));
+    spawnTreats(mult * cheerTreats);
   } else if (listener === 'tip-latest') {
-    spawnTreats(5);
+    const tipAmt = (event && event.amount) ? parseFloat(event.amount) : 1;
+    const mult = Math.max(1, Math.floor(tipAmt));
+    spawnTreats(mult * tipTreats);
   } else if (listener === 'simulate-reset') {
     resetBowl();
   }
