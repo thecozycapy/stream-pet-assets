@@ -37,7 +37,7 @@ window.addEventListener('onWidgetLoad', function(obj) {
   // Set bed image source and dynamic name tag
   const bedImg = document.getElementById('bed-img');
   if (bedImg) {
-    bedImg.src = "dog bed.png";
+    bedImg.src = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%20bed.png";
   }
   const bedNameText = document.getElementById('bed-name-text');
   if (bedNameText) {
@@ -51,7 +51,7 @@ window.addEventListener('onWidgetLoad', function(obj) {
   }
   
   // Set image source and description
-  const selectedDog = fields.selectedDog || "Dog 1.png";
+  const selectedDog = fields.selectedDog || "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%201.png";
   const petImg = document.getElementById('pet-img');
   if (petImg) {
     petImg.src = selectedDog;
@@ -101,7 +101,7 @@ function triggerPat() {
   }
   
   if (hand) {
-    hand.src = "hand.png";
+    hand.src = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/hand.png";
     hand.classList.add('active');
     setTimeout(() => {
       hand.classList.remove('active');

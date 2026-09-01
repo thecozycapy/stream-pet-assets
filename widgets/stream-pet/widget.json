@@ -7,13 +7,13 @@
   "selectedDog": {
     "type": "dropdown",
     "label": "Select Pet Breed",
-    "value": "Dog 1.png",
+    "value": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%201.png",
     "options": {
-      "Dog 1.png": "Dog 1",
-      "Dog 2.png": "Dog 2",
-      "Dog 3.png": "Dog 3",
-      "Dog 4.png": "Dog 4",
-      "Dog 5.png": "Dog 5"
+      "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%201.png": "Dog 1",
+      "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%202.png": "Dog 2",
+      "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%203.png": "Dog 3",
+      "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%204.png": "Dog 4",
+      "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%205.png": "Dog 5"
     }
   },
   "widgetScale": {
