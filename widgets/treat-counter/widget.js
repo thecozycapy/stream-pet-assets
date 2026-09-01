@@ -1,24 +1,20 @@
 // Dog Bowl Treat Counter Logic
 let treatType = "mixed"; // mixed, bones, biscuits, hearts, stars
-let maxTreats = 50;
 let gravity = 0.35;
-let bounciness = 0.55;
 let widgetScale = 1.0;
 
 let canvas, ctx;
 let particles = [];
 let totalCount = 0;
 
-// Physics loop request ID
+// Animation loop request ID
 let animFrameId = null;
 
 window.addEventListener('onWidgetLoad', function(obj) {
   const fields = (obj && obj.detail && obj.detail.fieldData) ? obj.detail.fieldData : {};
   
   treatType = fields.treatType || "mixed";
-  maxTreats = parseInt(fields.maxTreats) || 50;
   gravity = (parseInt(fields.gravityPower) || 35) / 100;
-  bounciness = (parseInt(fields.bounciness) || 55) / 100;
   
   const scaleVal = fields.widgetScale !== undefined ? parseInt(fields.widgetScale) : 100;
   widgetScale = (scaleVal || 100) / 100;
@@ -73,7 +69,6 @@ function initPhysics() {
   
   window.addEventListener('resize', resizeCanvas);
   
-  // Start loop if not running
   if (!animFrameId) {
     physicsLoop();
   }
@@ -99,25 +94,12 @@ function updateCounterDisplay() {
   }
 }
 
-// Spawns multiple treats falling from the top into the bowl
+// Spawns treats falling from top towards the bowl
 function spawnTreats(count) {
-  // Trigger bowl pop animation
-  const bowlContainer = document.getElementById('foreground-bowl-container');
-  if (bowlContainer) {
-    bowlContainer.classList.remove('pop-alert');
-    void bowlContainer.offsetWidth; // Trigger reflow
-    bowlContainer.classList.add('pop-alert');
-  }
-
   const centerX = canvas.width / 2;
   const baseRadius = 12 * widgetScale;
   
   for (let i = 0; i < count; i++) {
-    if (particles.length >= maxTreats) {
-      // Prune oldest particle to avoid overflow lag
-      particles.shift();
-    }
-    
     // Choose treat design type
     let design = treatType;
     if (treatType === "mixed") {
@@ -125,25 +107,33 @@ function spawnTreats(count) {
       design = types[Math.floor(Math.random() * types.length)];
     }
     
-    // Spawn centered above the bowl opening with random scatter
+    // Spawn centered above bowl with slight horizontal scatter and vertical delay
     particles.push({
-      x: centerX + (Math.random() * (80 * widgetScale) - (40 * widgetScale)),
-      y: -20 - (i * 25 * widgetScale), // stagger spawn heights
-      vx: (Math.random() * 3 - 1.5) * widgetScale,
-      vy: (Math.random() * 2 + 1) * widgetScale,
+      x: centerX + (Math.random() * (100 * widgetScale) - (50 * widgetScale)),
+      y: -30 - (i * 28 * widgetScale),
+      vx: (Math.random() * 2 - 1) * widgetScale,
+      vy: (Math.random() * 2 + 3) * widgetScale,
       radius: baseRadius,
       angle: Math.random() * Math.PI * 2,
       angularVelocity: Math.random() * 0.1 - 0.05,
-      type: design
+      type: design,
+      state: "falling",
+      alpha: 1.0,
+      scale: 1.0
     });
-    
-    totalCount++;
   }
-  
-  updateCounterDisplay();
 }
 
-// Physics update loop
+function triggerBowlPop() {
+  const bowlContainer = document.getElementById('foreground-bowl-container');
+  if (bowlContainer) {
+    bowlContainer.classList.remove('pop-alert');
+    void bowlContainer.offsetWidth; // Trigger reflow
+    bowlContainer.classList.add('pop-alert');
+  }
+}
+
+// Animation & update loop
 function physicsLoop() {
   updatePhysics();
   drawPhysics();
@@ -152,135 +142,34 @@ function physicsLoop() {
 
 function updatePhysics() {
   const centerX = canvas.width / 2;
-  
-  // Physical dimensions matching Dog bowl.png (bottom: 24px, width: 280px * widgetScale)
-  const bowlY = canvas.height - 24 - (32 * widgetScale); // bottom interior floor
-  const bowlFloorLeft = centerX - (85 * widgetScale);
-  const bowlFloorRight = centerX + (85 * widgetScale);
-  const rimTopY = canvas.height - 24 - (110 * widgetScale); // top rim line
+  // Opening rim line of Dog bowl.png
+  const bowlTargetY = canvas.height - 24 - (65 * widgetScale);
   
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
     
-    // Apply gravity
-    p.vy += gravity * widgetScale;
-    p.vy *= 0.98; // damping
-    p.vx *= 0.98;
-    
-    // Update coordinates
-    p.x += p.vx;
-    p.y += p.vy;
-    p.angle += p.angularVelocity;
-    
-    // 1. Fallback floor boundary at bottom of screen
-    const floorLimit = canvas.height - p.radius;
-    if (p.y > floorLimit) {
-      p.y = floorLimit;
-      p.vy = -p.vy * bounciness;
-      p.vx *= 0.8;
-      p.angularVelocity *= 0.8;
-    }
-    
-    // Screen left/right wall boundaries
-    if (p.x < p.radius) {
-      p.x = p.radius;
-      p.vx = -p.vx * bounciness;
-    } else if (p.x > canvas.width - p.radius) {
-      p.x = canvas.width - p.radius;
-      p.vx = -p.vx * bounciness;
-    }
-    
-    // 2. Bowl Container Interior Collisions (contained inside Dog bowl.png)
-    if (p.y > rimTopY) {
-      // Bottom interior floor bounce
-      if (p.y > bowlY - p.radius && p.x >= bowlFloorLeft && p.x <= bowlFloorRight) {
-        p.y = bowlY - p.radius;
-        p.vy = -p.vy * bounciness;
-        p.vx *= 0.75;
-        p.angularVelocity *= 0.8;
+    if (p.state === "falling") {
+      p.vy += gravity * widgetScale;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.angle += p.angularVelocity;
+      
+      // When snack hits the bowl opening level
+      if (p.y >= bowlTargetY) {
+        p.state = "disappearing";
+        totalCount++;
+        updateCounterDisplay();
+        triggerBowlPop();
       }
+    } else if (p.state === "disappearing") {
+      p.y += p.vy * 0.4;
+      p.alpha -= 0.14;
+      p.scale *= 0.82;
       
-      // Slanted Left Wall of the Bowl
-      const lx1 = centerX - (120 * widgetScale);
-      const ly1 = rimTopY;
-      const lx2 = bowlFloorLeft;
-      const ly2 = bowlY;
-      
-      if (p.y >= ly1 - p.radius && p.y <= ly2 && p.x < centerX) {
-        const lineLen = Math.hypot(lx2 - lx1, ly2 - ly1);
-        if (lineLen > 0) {
-          const nx = -(ly2 - ly1) / lineLen;
-          const ny = (lx2 - lx1) / lineLen;
-          const dot = (p.x - lx1) * nx + (p.y - ly1) * ny;
-          if (dot < p.radius) {
-            p.x += nx * (p.radius - dot);
-            p.y += ny * (p.radius - dot);
-            const vDot = p.vx * nx + p.vy * ny;
-            p.vx -= (1 + bounciness) * vDot * nx;
-            p.vy -= (1 + bounciness) * vDot * ny;
-          }
-        }
-      }
-      
-      // Slanted Right Wall of the Bowl
-      const rx1 = centerX + (120 * widgetScale);
-      const ry1 = rimTopY;
-      const rx2 = bowlFloorRight;
-      const ry2 = bowlY;
-      
-      if (p.y >= ry1 - p.radius && p.y <= ry2 && p.x > centerX) {
-        const lineLen = Math.hypot(rx2 - rx1, ry2 - ry1);
-        if (lineLen > 0) {
-          const rnx = (ry2 - ry1) / lineLen;
-          const rny = -(rx2 - rx1) / lineLen;
-          const dot = (p.x - rx1) * rnx + (p.y - ry1) * rny;
-          if (dot < p.radius) {
-            p.x += rnx * (p.radius - dot);
-            p.y += rny * (p.radius - dot);
-            const vDot = p.vx * rnx + p.vy * rny;
-            p.vx -= (1 + bounciness) * vDot * rnx;
-            p.vy -= (1 + bounciness) * vDot * rny;
-          }
-        }
-      }
-    }
-  }
-  
-  // 3. Resolve Particle-to-Particle stack collisions inside the bowl
-  for (let i = 0; i < particles.length; i++) {
-    for (let j = i + 1; j < particles.length; j++) {
-      let p1 = particles[i];
-      let p2 = particles[j];
-      
-      let dx = p2.x - p1.x;
-      let dy = p2.y - p1.y;
-      let dist = Math.hypot(dx, dy);
-      let minDist = p1.radius + p2.radius;
-      
-      if (dist < minDist) {
-        if (dist === 0) continue;
-        
-        let overlap = minDist - dist;
-        let nx = dx / dist;
-        let ny = dy / dist;
-        
-        p1.x -= nx * overlap * 0.5;
-        p1.y -= ny * overlap * 0.5;
-        p2.x += nx * overlap * 0.5;
-        p2.y += ny * overlap * 0.5;
-        
-        let kx = p1.vx - p2.vx;
-        let ky = p1.vy - p2.vy;
-        let pVal = (nx * kx + ny * ky);
-        
-        p1.vx -= nx * pVal * bounciness;
-        p1.vy -= ny * pVal * bounciness;
-        p2.vx += nx * pVal * bounciness;
-        p2.vy += ny * pVal * bounciness;
-        
-        const temp = p1.angularVelocity;
-        p1.angularVelocity = p2.angularVelocity * 0.5;
-        p2.angularVelocity = temp * 0.5;
+      // Once fully vanished, remove from particles array
+      if (p.alpha <= 0 || p.scale <= 0.1) {
+        particles.splice(i, 1);
+        i--;
       }
     }
   }
@@ -289,9 +178,12 @@ function updatePhysics() {
 function drawPhysics() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  // Render treats
+  // Render active falling & fading treats
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
+    
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, Math.min(1, p.alpha));
     
     if (p.type === "bone") {
       drawBone(p);
@@ -302,15 +194,18 @@ function drawPhysics() {
     } else if (p.type === "heart") {
       drawHeart(p);
     }
+    
+    ctx.restore();
   }
 }
 
-// Drawing primitives scaled to widgetScale
+// Drawing primitives scaled to widgetScale and particle fade scale
 function drawBone(p) {
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(p.angle);
-  ctx.scale(p.radius / 12, p.radius / 12);
+  const s = p.scale * (p.radius / 12);
+  ctx.scale(s, s);
   
   ctx.fillStyle = "#fffbf2";
   ctx.strokeStyle = "#8d5b4c";
@@ -334,7 +229,8 @@ function drawBiscuit(p) {
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(p.angle);
-  ctx.scale(p.radius / 12, p.radius / 12);
+  const s = p.scale * (p.radius / 12);
+  ctx.scale(s, s);
   
   ctx.fillStyle = "#cbb29b";
   ctx.strokeStyle = "#7e624c";
@@ -359,7 +255,8 @@ function drawStar(p) {
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(p.angle);
-  ctx.scale(p.radius / 12, p.radius / 12);
+  const s = p.scale * (p.radius / 12);
+  ctx.scale(s, s);
   
   ctx.fillStyle = "#f5d142";
   ctx.strokeStyle = "#c29f1b";
@@ -368,7 +265,7 @@ function drawStar(p) {
   ctx.beginPath();
   for (let i = 0; i < 5; i++) {
     ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * 12, Math.sin((18 + i * 72) * Math.PI / 180) * 12);
-    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * 5.5, Math.sin((54 + i * 72) * Math.PI / 180) * 5.5);
+    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * 5.5, Math.sin((54 + i * 72) * Math.PI / 180) * (5.5));
   }
   ctx.closePath();
   ctx.fill();
@@ -381,7 +278,8 @@ function drawHeart(p) {
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(p.angle);
-  ctx.scale(p.radius / 12, p.radius / 12);
+  const s = p.scale * (p.radius / 12);
+  ctx.scale(s, s);
   
   ctx.fillStyle = "#ff6b8b";
   ctx.strokeStyle = "#d43d60";
