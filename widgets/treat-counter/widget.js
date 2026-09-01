@@ -24,7 +24,7 @@ window.addEventListener('onWidgetLoad', function(obj) {
   treatGoal = parseInt(fields.treatGoal) || 100;
   
   followerTreats = fields.followerTreats !== undefined ? parseInt(fields.followerTreats) : 1;
-  subTreats = fields.subTreats !== undefined ? parseInt(fields.subTreats) : 10;
+  subTreats = fields.subTreats !== undefined ? parseInt(fields.subTreats) : 5;
   cheerTreats = fields.cheerTreats !== undefined ? parseInt(fields.cheerTreats) : 5;
   tipTreats = fields.tipTreats !== undefined ? parseInt(fields.tipTreats) : 5;
   
@@ -37,13 +37,11 @@ window.addEventListener('onWidgetLoad', function(obj) {
     document.documentElement.style.setProperty('--text-color', fields.textColor);
   }
   
-  // Handle manual reset from fields setting
-  if (fields.resetBowl === "yes") {
+  if (fields.resetCounter === "yes" || fields.resetBowl === "reset") {
     resetBowl();
   } else {
     updateBowlImage();
   }
-  
   initPhysics();
 });
 
@@ -51,6 +49,13 @@ window.addEventListener('onEventReceived', function(obj) {
   if (!obj || !obj.detail) return;
   const listener = obj.detail.listener;
   const event = obj.detail.event;
+  const fieldData = obj.detail.fieldData || {};
+  
+  // Read reward variables dynamically if updated
+  if (fieldData.followerTreats !== undefined) followerTreats = parseInt(fieldData.followerTreats);
+  if (fieldData.subTreats !== undefined) subTreats = parseInt(fieldData.subTreats);
+  if (fieldData.cheerTreats !== undefined) cheerTreats = parseInt(fieldData.cheerTreats);
+  if (fieldData.tipTreats !== undefined) tipTreats = parseInt(fieldData.tipTreats);
   
   if (listener === 'follower-latest') {
     spawnTreats(followerTreats);

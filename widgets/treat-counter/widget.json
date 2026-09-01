@@ -5,14 +5,20 @@
     "value": 100,
     "group": "General Settings"
   },
-  "resetBowl": {
+  "resetCounter": {
     "type": "dropdown",
-    "label": "Reset Treat Counter to 0",
+    "label": "Reset Treat Counter",
     "value": "no",
     "options": {
       "no": "Keep Current Treats",
-      "yes": "Reset Treats to 0"
+      "yes": "Reset Counter to 0"
     },
+    "group": "General Settings"
+  },
+  "resetBowl": {
+    "type": "button",
+    "label": "Reset Treats to 0",
+    "value": "reset",
     "group": "General Settings"
   },
   "widgetScale": {
@@ -46,7 +52,7 @@
   "subTreats": {
     "type": "number",
     "label": "Treats per Subscriber",
-    "value": 10,
+    "value": 5,
     "group": "Treat Rewards"
   },
   "cheerTreats": {
@@ -60,6 +66,15 @@
     "label": "Treats per $1 Tip",
     "value": 5,
     "group": "Treat Rewards"
+  },
+  "maxTreats": {
+    "type": "slider",
+    "label": "Max Accumulation Limit",
+    "value": 50,
+    "min": 10,
+    "max": 100,
+    "step": 5,
+    "group": "Physics Settings"
   },
   "gravityPower": {
     "type": "slider",
