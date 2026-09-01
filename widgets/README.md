@@ -21,12 +21,6 @@ This folder contains the standalone files for the custom widgets, formatted and 
   - [widget.js](file:///c:/Users/dinat/Documents/1%20Twitch%20Etsy/Portfolio/widgets/pup-goal/widget.js) -> Paste into the **JS** tab.
   - [widget.json](file:///c:/Users/dinat/Documents/1%20Twitch%20Etsy/Portfolio/widgets/pup-goal/widget.json) -> Paste into the **FIELDS** (JSON) tab.
 
-- `stream-pet/`: **Stream Pet Companion** (Interactive customizable on-screen pet dog on a cozy bed with !pet, !treat, and !bark chat commands and alerts).
-  - [widget.html](file:///c:/Users/dinat/Documents/1%20Twitch%20Etsy/Portfolio/widgets/stream-pet/widget.html) -> Paste into the **HTML** tab.
-  - [widget.css](file:///c:/Users/dinat/Documents/1%20Twitch%20Etsy/Portfolio/widgets/stream-pet/widget.css) -> Paste into the **CSS** tab.
-  - [widget.js](file:///c:/Users/dinat/Documents/1%20Twitch%20Etsy/Portfolio/widgets/stream-pet/widget.js) -> Paste into the **JS** tab.
-  - [widget.json](file:///c:/Users/dinat/Documents/1%20Twitch%20Etsy/Portfolio/widgets/stream-pet/widget.json) -> Paste into the **FIELDS** (JSON) tab.
-
 ---
 
 ## How to Install in StreamElements

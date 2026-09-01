@@ -248,6 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
       activeWidget.html = htmlText;
       activeWidget.css = cssText;
       activeWidget.js = jsText;
+      activeWidget.jsonSchema = jsonSchema;
       activeWidget.fields = parsedFields;
       
       // Reset inputs state
@@ -582,13 +583,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateFieldsJsonView() {
-    const formattedJson = JSON.stringify(currentFieldValues, null, 2);
-    document.getElementById('code-box-json').textContent = formattedJson;
+    let formattedJson = '';
+    if (activeWidget && activeWidget.jsonSchema) {
+      const exportSchema = JSON.parse(JSON.stringify(activeWidget.jsonSchema));
+      for (const [key, fieldConfig] of Object.entries(exportSchema)) {
+        if (currentFieldValues[key] !== undefined) {
+          fieldConfig.value = currentFieldValues[key];
+        }
+      }
+      formattedJson = JSON.stringify(exportSchema, null, 2);
+    } else {
+      formattedJson = JSON.stringify(currentFieldValues, null, 2);
+    }
+    
+    const jsonBox = document.getElementById('code-box-json');
+    if (jsonBox) jsonBox.textContent = formattedJson;
     
     // Highlight JSON if active
     if (activeCodeTab === 'json') {
-      const jsonEl = document.getElementById('code-box-json');
-      if (jsonEl) Prism.highlightElement(jsonEl);
+      if (jsonBox) Prism.highlightElement(jsonBox);
     }
   }
 

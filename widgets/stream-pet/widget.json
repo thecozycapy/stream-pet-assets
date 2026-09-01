@@ -2,19 +2,21 @@
   "petName": {
     "type": "text",
     "label": "Pet Name",
-    "value": "Rusty"
+    "value": "Rusty",
+    "group": "General Pet Settings"
   },
   "selectedDog": {
     "type": "dropdown",
     "label": "Select Pet Breed",
-    "value": "Dog 1",
+    "value": "dog1",
     "options": {
-      "Dog 1": "Dog 1 (Golden / Yellow)",
-      "Dog 2": "Dog 2 (Brown / Lab)",
-      "Dog 3": "Dog 3 (Black / Pup)",
-      "Dog 4": "Dog 4 (Fluffy / White)",
-      "Dog 5": "Dog 5 (Corgi / Red)"
-    }
+      "dog1": "Dog 1 (Golden / Yellow)",
+      "dog2": "Dog 2 (Brown / Lab)",
+      "dog3": "Dog 3 (Black / Pup)",
+      "dog4": "Dog 4 (Fluffy / White)",
+      "dog5": "Dog 5 (Corgi / Red)"
+    },
+    "group": "General Pet Settings"
   },
   "widgetScale": {
     "type": "slider",
@@ -22,75 +24,8 @@
     "value": 200,
     "min": 50,
     "max": 350,
-    "step": 5
-  },
-  "dogXOffset": {
-    "type": "slider",
-    "label": "Dog Horizontal Position",
-    "value": 0,
-    "min": -80,
-    "max": 80,
-    "step": 1
-  },
-  "dogYOffset": {
-    "type": "slider",
-    "label": "Dog Vertical Position",
-    "value": 10,
-    "min": -50,
-    "max": 80,
-    "step": 1
-  },
-  "tagNameScale": {
-    "type": "slider",
-    "label": "Name Tag Text Size (px)",
-    "value": 5,
-    "min": 1,
-    "max": 15,
-    "step": 1
-  },
-  "tagXOffset": {
-    "type": "slider",
-    "label": "Name Tag Horizontal Position",
-    "value": 11,
-    "min": -100,
-    "max": 100,
-    "step": 1
-  },
-  "tagYOffset": {
-    "type": "slider",
-    "label": "Name Tag Vertical Position",
-    "value": 25,
-    "min": -20,
-    "max": 80,
-    "step": 1
-  },
-  "tagRotate": {
-    "type": "slider",
-    "label": "Name Tag Rotation (deg)",
-    "value": -5,
-    "min": -45,
-    "max": 45,
-    "step": 1
-  },
-  "tagTextColor": {
-    "type": "colorpicker",
-    "label": "Name Tag Text Color",
-    "value": "#3c2415"
-  },
-  "bubbleTextColor": {
-    "type": "colorpicker",
-    "label": "Speech Bubble Text Color",
-    "value": "#ffffff"
-  },
-  "bubbleBgColor": {
-    "type": "colorpicker",
-    "label": "Speech Bubble BG Color",
-    "value": "#201714"
-  },
-  "bubbleBorderColor": {
-    "type": "colorpicker",
-    "label": "Speech Bubble Border Color",
-    "value": "#e5a93b"
+    "step": 5,
+    "group": "General Pet Settings"
   },
   "idleAnimation": {
     "type": "dropdown",
@@ -99,6 +34,85 @@
     "options": {
       "yes": "Bouncing (Idle Breath)",
       "no": "Still (Static)"
-    }
+    },
+    "group": "General Pet Settings"
+  },
+  "dogXOffset": {
+    "type": "slider",
+    "label": "Dog Horizontal Position",
+    "value": 0,
+    "min": -80,
+    "max": 80,
+    "step": 1,
+    "group": "Position Calibration"
+  },
+  "dogYOffset": {
+    "type": "slider",
+    "label": "Dog Vertical Position",
+    "value": 10,
+    "min": -50,
+    "max": 80,
+    "step": 1,
+    "group": "Position Calibration"
+  },
+  "tagNameScale": {
+    "type": "slider",
+    "label": "Name Tag Text Size (px)",
+    "value": 5,
+    "min": 1,
+    "max": 15,
+    "step": 1,
+    "group": "Bed Name Tag Settings"
+  },
+  "tagXOffset": {
+    "type": "slider",
+    "label": "Name Tag Horizontal Position",
+    "value": 11,
+    "min": -100,
+    "max": 100,
+    "step": 1,
+    "group": "Bed Name Tag Settings"
+  },
+  "tagYOffset": {
+    "type": "slider",
+    "label": "Name Tag Vertical Position",
+    "value": 25,
+    "min": -20,
+    "max": 80,
+    "step": 1,
+    "group": "Bed Name Tag Settings"
+  },
+  "tagRotate": {
+    "type": "slider",
+    "label": "Name Tag Rotation (deg)",
+    "value": -5,
+    "min": -45,
+    "max": 45,
+    "step": 1,
+    "group": "Bed Name Tag Settings"
+  },
+  "tagTextColor": {
+    "type": "colorpicker",
+    "label": "Name Tag Text Color",
+    "value": "#3c2415",
+    "group": "Bed Name Tag Settings"
+  },
+  "bubbleTextColor": {
+    "type": "colorpicker",
+    "label": "Speech Bubble Text Color",
+    "value": "#ffffff",
+    "group": "Speech Bubble Colors"
+  },
+  "bubbleBgColor": {
+    "type": "colorpicker",
+    "label": "Speech Bubble BG Color",
+    "value": "#201714",
+    "group": "Speech Bubble Colors"
+  },
+  "bubbleBorderColor": {
+    "type": "colorpicker",
+    "label": "Speech Bubble Border Color",
+    "value": "#e5a93b",
+    "group": "Speech Bubble Colors"
   }
 }
