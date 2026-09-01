@@ -2,14 +2,16 @@
 let goalTitle = "Follower Goal";
 let goalTarget = 100;
 let currentCount = 0;
-let dogImage = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog.png";
+let followerTrackType = "session";
+const DOG_IMAGE_URL = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog.png";
 
+// Robust number sanitizer to strip dollar signs, currencies, and non-numeric characters
 function parseCleanNumber(val, fallback = 0) {
   if (val === null || val === undefined) return fallback;
-  if (typeof val === 'number') return isNaN(val) ? fallback : Math.floor(val);
+  if (typeof val === 'number') return isNaN(val) ? fallback : Math.round(val);
   if (typeof val === 'string') {
+    // Strip all currency symbols, dollar signs, and letters
     val = val.replace(/[^0-9]/g, '');
-    if (val === '') return fallback;
   }
   const parsed = parseInt(val, 10);
   return isNaN(parsed) ? fallback : parsed;
@@ -17,33 +19,31 @@ function parseCleanNumber(val, fallback = 0) {
 
 window.addEventListener('onWidgetLoad', function(obj) {
   const fields = (obj && obj.detail && obj.detail.fieldData) ? obj.detail.fieldData : {};
+  const session = (obj && obj.detail && obj.detail.session && obj.detail.session.data) ? obj.detail.session.data : {};
   
   goalTitle = fields.goalTitle || "Follower Goal";
   goalTarget = parseCleanNumber(fields.goalTarget, 100);
+  followerTrackType = fields.followerTrackType || "session";
   currentCount = parseCleanNumber(fields.currentCount, 0);
-  dogImage = fields.dogImage || "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog.png";
   
-  // Check if StreamElements session data has active follower goal data
-  if (obj.detail && obj.detail.session && obj.detail.session.data) {
-    const seGoal = obj.detail.session.data['follower-goal'] || obj.detail.session.data['follower-latest'];
-    if (seGoal) {
-      if (seGoal.amount !== undefined && seGoal.amount > 0) {
-        currentCount = parseCleanNumber(seGoal.amount, currentCount);
-      } else if (seGoal.current !== undefined && seGoal.current > 0) {
-        currentCount = parseCleanNumber(seGoal.current, currentCount);
-      } else if (seGoal.count !== undefined && seGoal.count > 0) {
-        currentCount = parseCleanNumber(seGoal.count, currentCount);
-      }
-    }
+  // If user selected tracking from StreamElements historical metrics
+  if (followerTrackType === 'total' && session['follower-total']) {
+    currentCount = parseCleanNumber(session['follower-total'].count, currentCount);
+  } else if (followerTrackType === 'week' && session['follower-week']) {
+    currentCount = parseCleanNumber(session['follower-week'].count, currentCount);
+  } else if (followerTrackType === 'month' && session['follower-month']) {
+    currentCount = parseCleanNumber(session['follower-month'].count, currentCount);
+  } else if (session['follower-goal'] && session['follower-goal'].amount !== undefined && followerTrackType !== 'session') {
+    currentCount = parseCleanNumber(session['follower-goal'].amount, currentCount);
   }
   
-  // Set labels
+  // Set goal title
   const labelEl = document.getElementById('goal-label');
   if (labelEl) labelEl.textContent = goalTitle;
   
-  // Set dog image
+  // Set runner dog image source
   const dogImgEl = document.getElementById('doggo-img');
-  if (dogImgEl) dogImgEl.src = dogImage;
+  if (dogImgEl) dogImgEl.src = DOG_IMAGE_URL;
   
   // Bind Colors to CSS Custom Properties
   document.documentElement.style.setProperty('--bar-color', fields.barColor || '#e5a93b');
@@ -62,35 +62,63 @@ window.addEventListener('onEventReceived', function(obj) {
   const listener = obj.detail.listener;
   const event = obj.detail.event;
   
-  // Handle Follower events
-  if (listener === 'follower-latest' || listener === 'follow' || listener === 'follower') {
-    currentCount++;
-    updateGoalUI();
-  } 
-  // Handle StreamElements Goal update events
-  else if (listener === 'follower-goal' || listener === 'goal' || listener === 'goal-update') {
-    if (event) {
-      if (event.amount !== undefined && parseCleanNumber(event.amount) > currentCount) {
-        currentCount = parseCleanNumber(event.amount, currentCount);
-      } else if (event.current !== undefined && parseCleanNumber(event.current) > currentCount) {
-        currentCount = parseCleanNumber(event.current, currentCount);
-      } else if (event.count !== undefined && parseCleanNumber(event.count) > currentCount) {
-        currentCount = parseCleanNumber(event.count, currentCount);
-      } else {
-        currentCount++;
-      }
-    } else {
-      currentCount++;
+  let isFollow = false;
+  
+  // 1. Native StreamElements follow event
+  if (listener === 'follower-latest') {
+    isFollow = true;
+  }
+  // 2. StreamElements Goal integration event
+  else if (listener === 'follower-goal') {
+    if (event && event.amount !== undefined) {
+      currentCount = parseCleanNumber(event.amount, currentCount + 1);
+      updateGoalUI();
+      return;
     }
-    updateGoalUI();
-  } 
-  // Handle Simulator events
+    isFollow = true;
+  }
+  // 3. StreamElements Emulate/Test event
+  else if (listener === 'event:test') {
+    if (event && (event.listener === 'follower-latest' || event.type === 'follower' || event.name)) {
+      isFollow = true;
+    }
+  }
+  // 4. Custom Simulator test triggers
   else if (listener === 'simulate-increment') {
     const amt = (event && event.amount) ? parseCleanNumber(event.amount, 1) : 1;
     currentCount += amt;
     updateGoalUI();
-  } else if (listener === 'simulate-reset') {
+    return;
+  }
+  else if (listener === 'simulate-reset') {
     currentCount = 0;
+    updateGoalUI();
+    return;
+  }
+  // 5. Fallback check for event payload type
+  else if (event && (event.type === 'follower' || event.listener === 'follower-latest')) {
+    isFollow = true;
+  }
+  
+  if (isFollow) {
+    currentCount++;
+    updateGoalUI();
+  }
+});
+
+// Listen for live session metric updates from StreamElements
+window.addEventListener('onSessionUpdate', function(obj) {
+  if (!obj || !obj.detail || !obj.detail.session) return;
+  const session = obj.detail.session;
+  
+  if (followerTrackType === 'total' && session['follower-total']) {
+    currentCount = parseCleanNumber(session['follower-total'].count, currentCount);
+    updateGoalUI();
+  } else if (followerTrackType === 'week' && session['follower-week']) {
+    currentCount = parseCleanNumber(session['follower-week'].count, currentCount);
+    updateGoalUI();
+  } else if (followerTrackType === 'month' && session['follower-month']) {
+    currentCount = parseCleanNumber(session['follower-month'].count, currentCount);
     updateGoalUI();
   }
 });
@@ -99,22 +127,14 @@ function updateGoalUI() {
   if (currentCount < 0) currentCount = 0;
   if (currentCount > goalTarget) currentCount = goalTarget;
   
-  // Update progress texts (pure numbers, zero currency signs)
+  // Format pure numbers without any dollar signs or currency symbols
   const valuesText = document.getElementById('goal-values');
   const percentText = document.getElementById('goal-percentage');
-  
-  const displayCurrent = String(currentCount).replace(/[^0-9]/g, '');
-  const displayTarget = String(goalTarget).replace(/[^0-9]/g, '');
-  
-  if (valuesText) {
-    valuesText.textContent = `${displayCurrent} / ${displayTarget}`;
-  }
+  if (valuesText) valuesText.textContent = `${currentCount} / ${goalTarget}`;
   
   const percentage = goalTarget > 0 ? (currentCount / goalTarget) : 0;
-  const percentageRounded = Math.min(100, Math.round(percentage * 100));
-  if (percentText) {
-    percentText.textContent = `${percentageRounded}%`;
-  }
+  const percentageRounded = Math.round(percentage * 100);
+  if (percentText) percentText.textContent = `${percentageRounded}%`;
   
   // Update Progress fill and Dog position
   const fill = document.getElementById('progress-bar-fill');

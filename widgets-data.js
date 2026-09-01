@@ -34,9 +34,9 @@ const WIDGETS_DATA = [
     description: "An interactive, linear tracker where a cute dog runner image slides across the progress bar closer to a bone target as you hit follow milestones.",
     image: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="180" viewBox="0 0 300 180"><rect width="300" height="180" fill="%230c0d14"/><rect x="35" y="75" width="210" height="12" rx="6" fill="rgba(255,255,255,0.06)"/><rect x="35" y="75" width="130" height="12" rx="6" fill="%23e5a93b"/><text x="145" y="70" font-size="20">🐶</text><text x="245" y="87" font-size="18">🦴</text><text x="150" y="116" fill="%23fff" font-family="'Outfit', sans-serif" font-weight="bold" font-size="13" text-anchor="middle">Treat Goal: 120 / 200</text></svg>`,
     events: [
-      { id: "inc1", label: "Feed Treat (+1)", listener: "follower-latest", data: { name: "BellyRuber" } },
-      { id: "inc5", label: "Simulate Multi (+5)", listener: "simulate-increment", data: { amount: 5 } },
-      { id: "resetGoal", label: "Reset Fetch Goal", listener: "simulate-reset", data: {} }
+      { id: "inc1", label: "Simulate Follower (+1)", listener: "follower-latest", data: { name: "BellyRuber" } },
+      { id: "inc5", label: "Simulate (+5 Followers)", listener: "simulate-increment", data: { amount: 5 } },
+      { id: "resetGoal", label: "Reset Follower Goal", listener: "simulate-reset", data: {} }
     ]
   },
   {

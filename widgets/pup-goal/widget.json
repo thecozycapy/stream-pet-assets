@@ -5,6 +5,18 @@
     "value": "Follower Goal",
     "group": "Goal Settings"
   },
+  "followerTrackType": {
+    "type": "dropdown",
+    "label": "Followers to Track",
+    "value": "session",
+    "options": {
+      "session": "Manual / Stream Session Followers",
+      "week": "Followers of the Last 7 Days",
+      "month": "Followers of the Past Month",
+      "total": "All-Time Followers"
+    },
+    "group": "Goal Settings"
+  },
   "goalTarget": {
     "type": "number",
     "label": "Goal Target Value (Followers)",
@@ -16,12 +28,6 @@
     "label": "Starting Follower Count",
     "value": 0,
     "group": "Goal Settings"
-  },
-  "dogImage": {
-    "type": "text",
-    "label": "Runner Dog Image URL",
-    "value": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog.png",
-    "group": "Visual Elements"
   },
   "bgColor": {
     "type": "colorpicker",
