@@ -5,16 +5,6 @@
     "value": 100,
     "group": "General Settings"
   },
-  "resetCounter": {
-    "type": "dropdown",
-    "label": "Reset Treat Counter",
-    "value": "no",
-    "options": {
-      "no": "Keep Current Treats",
-      "yes": "Reset Counter to 0"
-    },
-    "group": "General Settings"
-  },
   "resetBowl": {
     "type": "button",
     "label": "Reset Treats to 0",

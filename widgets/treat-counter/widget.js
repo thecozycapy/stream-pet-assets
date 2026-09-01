@@ -37,11 +37,9 @@ window.addEventListener('onWidgetLoad', function(obj) {
     document.documentElement.style.setProperty('--text-color', fields.textColor);
   }
   
-  if (fields.resetCounter === "yes" || fields.resetBowl === "reset") {
-    resetBowl();
-  } else {
-    updateBowlImage();
-  }
+  // Preserve current count and update bowl image & display on setting changes
+  updateBowlImage();
+  updateCounterDisplay();
   initPhysics();
 });
 
@@ -57,6 +55,12 @@ window.addEventListener('onEventReceived', function(obj) {
   if (fieldData.cheerTreats !== undefined) cheerTreats = parseInt(fieldData.cheerTreats);
   if (fieldData.tipTreats !== undefined) tipTreats = parseInt(fieldData.tipTreats);
   
+  // Reset button trigger handler
+  if (listener === 'widget-button' || listener === 'simulate-reset' || (event && (event.field === 'resetBowl' || event.name === 'resetBowl'))) {
+    resetBowl();
+    return;
+  }
+  
   if (listener === 'follower-latest') {
     spawnTreats(followerTreats);
   } else if (listener === 'subscriber-latest') {
@@ -69,8 +73,6 @@ window.addEventListener('onEventReceived', function(obj) {
     const tipAmt = (event && event.amount) ? parseFloat(event.amount) : 1;
     const mult = Math.max(1, Math.floor(tipAmt));
     spawnTreats(mult * tipTreats);
-  } else if (listener === 'simulate-reset') {
-    resetBowl();
   }
 });
 
