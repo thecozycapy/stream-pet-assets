@@ -10,6 +10,32 @@ let totalCount = 0;
 // Animation loop request ID
 let animFrameId = null;
 
+// Fixed relative coordinates for resting treats inside the bowl (layered progressively per 25 treats)
+const RESTING_PILES = [
+  // Layer 1 (0 to 25 treats: Bottom inner floor)
+  { relX: -55, relY: -35, rot: -0.2, type: 'bone' },
+  { relX: -25, relY: -32, rot: 0.3, type: 'biscuit' },
+  { relX: 0, relY: -35, rot: -0.1, type: 'star' },
+  { relX: 25, relY: -32, rot: 0.4, type: 'heart' },
+  { relX: 55, relY: -35, rot: -0.3, type: 'bone' },
+
+  // Layer 2 (26 to 50 treats: Mid-low pile level)
+  { relX: -45, relY: -50, rot: 0.5, type: 'biscuit' },
+  { relX: -18, relY: -48, rot: -0.4, type: 'bone' },
+  { relX: 10, relY: -52, rot: 0.2, type: 'heart' },
+  { relX: 42, relY: -49, rot: -0.2, type: 'star' },
+
+  // Layer 3 (51 to 75 treats: Mid-high pile level)
+  { relX: -35, relY: -65, rot: -0.3, type: 'heart' },
+  { relX: -5, relY: -68, rot: 0.1, type: 'bone' },
+  { relX: 28, relY: -66, rot: -0.5, type: 'biscuit' },
+
+  // Layer 4 (76 to 100+ treats: Top rim brim level)
+  { relX: -22, relY: -82, rot: 0.4, type: 'star' },
+  { relX: 5, relY: -84, rot: -0.2, type: 'heart' },
+  { relX: 25, relY: -80, rot: 0.3, type: 'bone' }
+];
+
 window.addEventListener('onWidgetLoad', function(obj) {
   const fields = (obj && obj.detail && obj.detail.fieldData) ? obj.detail.fieldData : {};
   
@@ -116,10 +142,7 @@ function spawnTreats(count) {
       radius: baseRadius,
       angle: Math.random() * Math.PI * 2,
       angularVelocity: Math.random() * 0.1 - 0.05,
-      type: design,
-      state: "falling",
-      alpha: 1.0,
-      scale: 1.0
+      type: design
     });
   }
 }
@@ -165,15 +188,59 @@ function updatePhysics() {
   }
 }
 
+function drawRestingPile() {
+  if (totalCount <= 0) return;
+  
+  const centerX = canvas.width / 2;
+  const bowlBaseY = canvas.height - 24;
+  
+  // Progressively show more resting treats in the bowl per 25 treats milestone
+  // 1-25 treats: fills Layer 1 (1-5 treats)
+  // 26-50 treats: fills Layer 2 (6-9 treats)
+  // 51-75 treats: fills Layer 3 (10-12 treats)
+  // 76-100+ treats: fills Layer 4 (13-15 treats - full brim!)
+  const visibleCount = Math.min(RESTING_PILES.length, Math.ceil(totalCount / 6.6));
+  
+  for (let i = 0; i < visibleCount; i++) {
+    const item = RESTING_PILES[i];
+    
+    // Default or user-selected treat design
+    let design = item.type;
+    if (treatType !== "mixed") {
+      design = treatType;
+    }
+    
+    const p = {
+      x: centerX + (item.relX * widgetScale),
+      y: bowlBaseY + (item.relY * widgetScale),
+      angle: item.rot,
+      radius: 11 * widgetScale,
+      type: design,
+      scale: 1.0
+    };
+    
+    ctx.save();
+    ctx.globalAlpha = 0.95;
+    if (p.type === "bone") drawBone(p);
+    else if (p.type === "biscuit") drawBiscuit(p);
+    else if (p.type === "star") drawStar(p);
+    else if (p.type === "heart") drawHeart(p);
+    ctx.restore();
+  }
+}
+
 function drawPhysics() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  // Render active falling & fading treats
+  // 1. Render the accumulated resting treat pile inside the bowl
+  drawRestingPile();
+  
+  // 2. Render active falling treats in foreground
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
     
     ctx.save();
-    ctx.globalAlpha = Math.max(0, Math.min(1, p.alpha));
+    ctx.globalAlpha = 1.0;
     
     if (p.type === "bone") {
       drawBone(p);
@@ -189,12 +256,12 @@ function drawPhysics() {
   }
 }
 
-// Drawing primitives scaled to widgetScale and particle fade scale
+// Drawing primitives scaled to widgetScale
 function drawBone(p) {
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(p.angle);
-  const s = p.scale * (p.radius / 12);
+  const s = (p.scale || 1) * (p.radius / 12);
   ctx.scale(s, s);
   
   ctx.fillStyle = "#fffbf2";
@@ -219,7 +286,7 @@ function drawBiscuit(p) {
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(p.angle);
-  const s = p.scale * (p.radius / 12);
+  const s = (p.scale || 1) * (p.radius / 12);
   ctx.scale(s, s);
   
   ctx.fillStyle = "#cbb29b";
@@ -245,7 +312,7 @@ function drawStar(p) {
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(p.angle);
-  const s = p.scale * (p.radius / 12);
+  const s = (p.scale || 1) * (p.radius / 12);
   ctx.scale(s, s);
   
   ctx.fillStyle = "#f5d142";
@@ -255,7 +322,7 @@ function drawStar(p) {
   ctx.beginPath();
   for (let i = 0; i < 5; i++) {
     ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * 12, Math.sin((18 + i * 72) * Math.PI / 180) * 12);
-    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * 5.5, Math.sin((54 + i * 72) * Math.PI / 180) * (5.5));
+    ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * 5.5, Math.sin((54 + i * 72) * Math.PI / 180) * 5.5);
   }
   ctx.closePath();
   ctx.fill();
@@ -268,7 +335,7 @@ function drawHeart(p) {
   ctx.save();
   ctx.translate(p.x, p.y);
   ctx.rotate(p.angle);
-  const s = p.scale * (p.radius / 12);
+  const s = (p.scale || 1) * (p.radius / 12);
   ctx.scale(s, s);
   
   ctx.fillStyle = "#ff6b8b";
