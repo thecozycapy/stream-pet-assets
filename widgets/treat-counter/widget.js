@@ -142,8 +142,8 @@ function physicsLoop() {
 
 function updatePhysics() {
   const centerX = canvas.width / 2;
-  // Target Y level matching the number of treats text on the bowl
-  const numberTextY = canvas.height - 24 - (45 * widgetScale);
+  // Exact Y level of the treat counter number text in foreground
+  const countTextY = canvas.height - 24 - (60 * widgetScale);
   
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
@@ -153,8 +153,8 @@ function updatePhysics() {
     p.y += p.vy;
     p.angle += p.angularVelocity;
     
-    // When snack reaches the number of treats, update counter and disappear instantly
-    if (p.y >= numberTextY) {
+    // When snack hits the treat count text in the foreground, pop the number and vanish immediately
+    if (p.y >= countTextY) {
       totalCount++;
       updateCounterDisplay();
       triggerBowlPop();
@@ -168,17 +168,12 @@ function updatePhysics() {
 function drawPhysics() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  // Hard clipping mask at the number text level to guarantee zero visibility under the bowl
-  const numberTextY = canvas.height - 24 - (45 * widgetScale);
-  
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(0, 0, canvas.width, numberTextY);
-  ctx.clip();
-  
-  // Render active falling treats
+  // Render active falling & fading treats
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
+    
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, Math.min(1, p.alpha));
     
     if (p.type === "bone") {
       drawBone(p);
@@ -189,9 +184,9 @@ function drawPhysics() {
     } else if (p.type === "heart") {
       drawHeart(p);
     }
+    
+    ctx.restore();
   }
-  
-  ctx.restore();
 }
 
 // Drawing primitives scaled to widgetScale and particle fade scale
