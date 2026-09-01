@@ -1,12 +1,4 @@
 {
-  "widgetName": {
-    "type": "hidden",
-    "value": "Pup Chat Settings"
-  },
-  "widgetAuthor": {
-    "type": "hidden",
-    "value": "The Cozy Capy"
-  },
   "textColor": {
     "type": "colorpicker",
     "label": "Message Text Color",

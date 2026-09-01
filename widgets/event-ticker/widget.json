@@ -1,12 +1,4 @@
 {
-  "widgetName": {
-    "type": "hidden",
-    "value": "Event Ticker Settings"
-  },
-  "widgetAuthor": {
-    "type": "hidden",
-    "value": "The Cozy Capy"
-  },
   "bannerPosition": {
     "type": "dropdown",
     "label": "Banner Screen Position",

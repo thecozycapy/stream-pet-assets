@@ -1,12 +1,4 @@
 {
-  "widgetName": {
-    "type": "hidden",
-    "value": "Stream Pet Settings"
-  },
-  "widgetAuthor": {
-    "type": "hidden",
-    "value": "The Cozy Capy"
-  },
   "petName": {
     "type": "text",
     "label": "Pet Name",
@@ -15,13 +7,13 @@
   "selectedDog": {
     "type": "dropdown",
     "label": "Select Pet Breed",
-    "value": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%201.png",
+    "value": "Dog 1",
     "options": {
-      "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%201.png": "Dog 1",
-      "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%202.png": "Dog 2",
-      "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%203.png": "Dog 3",
-      "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%204.png": "Dog 4",
-      "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%205.png": "Dog 5"
+      "Dog 1": "Dog 1 (Golden / Yellow)",
+      "Dog 2": "Dog 2 (Brown / Lab)",
+      "Dog 3": "Dog 3 (Black / Pup)",
+      "Dog 4": "Dog 4 (Fluffy / White)",
+      "Dog 5": "Dog 5 (Corgi / Red)"
     }
   },
   "widgetScale": {

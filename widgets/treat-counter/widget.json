@@ -1,12 +1,4 @@
 {
-  "widgetName": {
-    "type": "hidden",
-    "value": "Treat Counter Settings"
-  },
-  "widgetAuthor": {
-    "type": "hidden",
-    "value": "The Cozy Capy"
-  },
   "bowlColor": {
     "type": "colorpicker",
     "label": "Bowl Base Color",

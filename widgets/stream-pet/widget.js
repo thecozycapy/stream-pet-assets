@@ -50,11 +50,21 @@ window.addEventListener('onWidgetLoad', function(obj) {
     pet.className = idleAnimation === "yes" ? "idle-breath" : "";
   }
   
+  // Breed asset mapping
+  const DOG_BREED_ASSETS = {
+    "Dog 1": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%201.png",
+    "Dog 2": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%202.png",
+    "Dog 3": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%203.png",
+    "Dog 4": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%204.png",
+    "Dog 5": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%205.png"
+  };
+
   // Set image source and description
-  const selectedDog = fields.selectedDog || "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%201.png";
+  const dogSelection = fields.selectedDog || "Dog 1";
+  const dogImageUrl = DOG_BREED_ASSETS[dogSelection] || (dogSelection.startsWith('http') ? dogSelection : `${dogSelection}.png`) || DOG_BREED_ASSETS["Dog 1"];
   const petImg = document.getElementById('pet-img');
   if (petImg) {
-    petImg.src = selectedDog;
+    petImg.src = dogImageUrl;
     petImg.alt = petName;
   }
 });

@@ -1,12 +1,4 @@
 {
-  "widgetName": {
-    "type": "hidden",
-    "value": "Pup Goal Settings"
-  },
-  "widgetAuthor": {
-    "type": "hidden",
-    "value": "The Cozy Capy"
-  },
   "goalTitle": {
     "type": "text",
     "label": "Goal Title",
