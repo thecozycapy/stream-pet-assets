@@ -1,17 +1,25 @@
 // Fetch the Bone Goal Logic
-let goalTitle = "Treat Goal";
+let goalTitle = "Follower Goal";
 let goalTarget = 100;
 let currentCount = 0;
-let dogImage = "Dog.png";
+let dogImage = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog.png";
+
+function parseNumber(val, fallback = 0) {
+  if (typeof val === 'string') {
+    val = val.replace(/[^0-9]/g, '');
+  }
+  const parsed = parseInt(val, 10);
+  return isNaN(parsed) ? fallback : parsed;
+}
 
 window.addEventListener('onWidgetLoad', function(obj) {
   const fields = obj.detail.fieldData;
   if (!fields) return;
   
-  goalTitle = fields.goalTitle || "Treat Goal";
-  goalTarget = parseInt(fields.goalTarget) || 100;
-  currentCount = parseInt(fields.currentCount) || 0;
-  dogImage = fields.dogImage || "Dog.png";
+  goalTitle = fields.goalTitle || "Follower Goal";
+  goalTarget = parseNumber(fields.goalTarget, 100);
+  currentCount = parseNumber(fields.currentCount, 0);
+  dogImage = fields.dogImage || "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog.png";
   
   // Set labels
   const labelEl = document.getElementById('goal-label');
@@ -41,8 +49,15 @@ window.addEventListener('onEventReceived', function(obj) {
   if (listener === 'follower-latest') {
     currentCount++;
     updateGoalUI();
+  } else if (listener === 'follower-goal') {
+    if (event && event.amount !== undefined) {
+      currentCount = parseNumber(event.amount, currentCount);
+    } else {
+      currentCount++;
+    }
+    updateGoalUI();
   } else if (listener === 'simulate-increment') {
-    const amt = (event && event.amount) ? event.amount : 1;
+    const amt = (event && event.amount) ? parseNumber(event.amount, 1) : 1;
     currentCount += amt;
     updateGoalUI();
   } else if (listener === 'simulate-reset') {
@@ -55,7 +70,7 @@ function updateGoalUI() {
   if (currentCount < 0) currentCount = 0;
   if (currentCount > goalTarget) currentCount = goalTarget;
   
-  // Update progress texts
+  // Update progress texts (Clean follower count without currency symbols)
   const valuesText = document.getElementById('goal-values');
   const percentText = document.getElementById('goal-percentage');
   if (valuesText) valuesText.textContent = `${currentCount} / ${goalTarget}`;

@@ -2,56 +2,67 @@
   "goalTitle": {
     "type": "text",
     "label": "Goal Title",
-    "value": "Treat Goal"
+    "value": "Follower Goal",
+    "group": "Goal Settings"
   },
   "goalTarget": {
     "type": "number",
-    "label": "Goal Target Value",
-    "value": 100
+    "label": "Goal Target Value (Followers)",
+    "value": 100,
+    "group": "Goal Settings"
   },
   "currentCount": {
     "type": "number",
-    "label": "Starting Value",
-    "value": 0
+    "label": "Starting Follower Count",
+    "value": 0,
+    "group": "Goal Settings"
   },
   "dogImage": {
     "type": "text",
-    "label": "Dog Image URL",
-    "value": "Dog.png"
+    "label": "Runner Dog Image URL",
+    "value": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog.png",
+    "group": "Visual Elements"
   },
   "bgColor": {
     "type": "colorpicker",
     "label": "Background Color",
-    "value": "#201714"
+    "value": "#201714",
+    "group": "Colors & Theme"
   },
   "borderColor": {
     "type": "colorpicker",
     "label": "Border Color",
-    "value": "#382a24"
+    "value": "#382a24",
+    "group": "Colors & Theme"
   },
   "labelColor": {
     "type": "colorpicker",
     "label": "Goal Title Color",
-    "value": "#d1c3b7"
+    "value": "#d1c3b7",
+    "group": "Colors & Theme"
   },
   "valuesColor": {
     "type": "colorpicker",
     "label": "Values Text Color",
-    "value": "#ffffff"
+    "value": "#ffffff",
+    "group": "Colors & Theme"
   },
   "trackColor": {
     "type": "colorpicker",
     "label": "Track BG Color",
-    "value": "#2e211d"
+    "value": "#2e211d",
+    "group": "Colors & Theme"
   },
   "barColor": {
     "type": "colorpicker",
     "label": "Progress Bar Color",
-    "value": "#e5a93b"
+    "value": "#e5a93b",
+    "group": "Colors & Theme"
   },
   "percentageColor": {
     "type": "colorpicker",
     "label": "Percentage Color",
-    "value": "#e5a93b"
+    "value": "#e5a93b",
+    "group": "Colors & Theme"
   }
 }
