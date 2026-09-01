@@ -1,21 +1,13 @@
 {
   "previewMode": {
     "type": "dropdown",
-    "label": "Preview Mode (Always Show)",
-    "value": "yes",
+    "label": "Preview Mode",
+    "value": "always_show",
     "options": {
-      "yes": "Always Show (For Customizing)",
-      "no": "Hide After Alert (For Stream)"
-    }
-  },
-  "alwaysShowOverlay": {
-    "type": "dropdown",
-    "label": "Stream Visibility Behavior",
-    "value": "no",
-    "options": {
-      "no": "Disappear After Alert",
-      "yes": "Always Show (Return to Awaiting Adoption)"
-    }
+      "always_show": "Always Show",
+      "hide_after_alert": "Hide After Alert"
+    },
+    "group": "Visibility Settings"
   },
   "showDefaultText": {
     "type": "dropdown",
@@ -24,12 +16,14 @@
     "options": {
       "yes": "Show Default Text",
       "no": "Start Blank (No Text)"
-    }
+    },
+    "group": "Visibility Settings"
   },
   "defaultMessage": {
     "type": "text",
     "label": "Default Text on Load",
-    "value": "Awaiting adoption..."
+    "value": "Awaiting adoption...",
+    "group": "Visibility Settings"
   },
   "showAvatar": {
     "type": "dropdown",
@@ -38,7 +32,8 @@
     "options": {
       "yes": "Show Avatar",
       "no": "Hide Avatar"
-    }
+    },
+    "group": "Visual Elements"
   },
   "showCollar": {
     "type": "dropdown",
@@ -47,32 +42,38 @@
     "options": {
       "yes": "Show Collar",
       "no": "Hide Collar"
-    }
+    },
+    "group": "Visual Elements"
   },
   "themeColor": {
     "type": "colorpicker",
     "label": "Gold Border & Medal Color",
-    "value": "#e5a93b"
+    "value": "#e5a93b",
+    "group": "Color Customization"
   },
   "accentColor": {
     "type": "colorpicker",
     "label": "Collar Outer Glow Color",
-    "value": "#ff85a2"
+    "value": "#ff85a2",
+    "group": "Color Customization"
   },
   "collarColor": {
     "type": "colorpicker",
     "label": "Collar Strap Color",
-    "value": "#ff85a2"
+    "value": "#ff85a2",
+    "group": "Color Customization"
   },
   "boneColor": {
     "type": "colorpicker",
     "label": "Dog Bone Fill Color",
-    "value": "#fffbf2"
+    "value": "#fffbf2",
+    "group": "Color Customization"
   },
   "textColor": {
     "type": "colorpicker",
     "label": "Alert Text Color",
-    "value": "#2c1b18"
+    "value": "#2c1b18",
+    "group": "Color Customization"
   },
   "fontSize": {
     "type": "slider",
@@ -80,7 +81,8 @@
     "value": 12,
     "min": 8,
     "max": 24,
-    "step": 1
+    "step": 1,
+    "group": "Typography & Duration"
   },
   "alertDuration": {
     "type": "slider",
@@ -88,26 +90,31 @@
     "value": 5,
     "min": 2,
     "max": 15,
-    "step": 1
+    "step": 1,
+    "group": "Typography & Duration"
   },
   "followerMessage": {
     "type": "text",
     "label": "Follower Alert Message",
-    "value": "{name} gave a belly rub!"
+    "value": "{name} gave a belly rub!",
+    "group": "Alert Messages"
   },
   "subMessage": {
     "type": "text",
     "label": "Subscriber Alert Message",
-    "value": "{name} adopted a puppy!"
+    "value": "{name} adopted a puppy!",
+    "group": "Alert Messages"
   },
   "cheerMessage": {
     "type": "text",
     "label": "Cheer Alert Message",
-    "value": "{name} sent {amount} barks!"
+    "value": "{name} sent {amount} barks!",
+    "group": "Alert Messages"
   },
   "tipMessage": {
     "type": "text",
     "label": "Tip Alert Message",
-    "value": "{name} bought {amount} treats!"
+    "value": "{name} bought {amount} treats!",
+    "group": "Alert Messages"
   }
 }

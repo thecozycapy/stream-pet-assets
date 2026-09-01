@@ -4,8 +4,7 @@ let subscriberText = "{name} adopted a puppy!";
 let cheerText = "{name} sent {amount} barks!";
 let tipText = "{name} bought {amount} treats!";
 let alertTimeout = null;
-let previewMode = "yes";
-let alwaysShowOverlay = "no";
+let previewMode = "always_show";
 let showDefaultText = "yes";
 let defaultMessage = "Awaiting adoption...";
 
@@ -17,8 +16,7 @@ window.addEventListener('onWidgetLoad', function (obj) {
   subscriberText = fieldData.subMessage || "{name} adopted a puppy!";
   cheerText = fieldData.cheerMessage || "{name} sent {amount} barks!";
   tipText = fieldData.tipMessage || "{name} bought {amount} treats!";
-  previewMode = fieldData.previewMode || "yes";
-  alwaysShowOverlay = fieldData.alwaysShowOverlay || "no";
+  previewMode = fieldData.previewMode || "always_show";
   showDefaultText = fieldData.showDefaultText || "yes";
   defaultMessage = fieldData.defaultMessage || "Awaiting adoption...";
   
@@ -41,23 +39,21 @@ window.addEventListener('onWidgetLoad', function (obj) {
 
   const container = document.getElementById('alert-container');
   
-  // Set Default Text or Clear it on Load
+  // Set Initial Visibility State
   if (!alertTimeout) {
     const textEl = document.getElementById('alert-message-text');
     const pfpImg = document.getElementById('alert-pfp');
-    if (showDefaultText === "yes") {
-      textEl.textContent = defaultMessage;
+    
+    const isAlwaysShow = (previewMode === "always_show" || previewMode === "yes");
+    
+    if (isAlwaysShow) {
+      if (textEl) textEl.textContent = (showDefaultText === "yes") ? defaultMessage : "";
       if (pfpImg) pfpImg.src = 'https://static-cdn.jtvnw.net/user-default-pictures-uv/cdd517ad-def8-437d-9a4e-c27c02511a3c-profile_image-70x70.png';
-      container.className = 'alert-visible';
+      if (container) container.className = 'alert-visible';
     } else {
-      textEl.textContent = "";
-      if (pfpImg) pfpImg.src = 'https://static-cdn.jtvnw.net/user-default-pictures-uv/cdd517ad-def8-437d-9a4e-c27c02511a3c-profile_image-70x70.png';
-      // If preview mode or always show mode is on, show the skeleton shape; otherwise keep hidden
-      if (previewMode === "yes" || alwaysShowOverlay === "yes") {
-        container.className = 'alert-visible';
-      } else {
-        container.className = 'alert-hidden';
-      }
+      // Hide After Alert mode: completely hidden before and after alerts
+      if (textEl) textEl.textContent = "";
+      if (container) container.className = 'alert-hidden';
     }
   }
 });
@@ -92,35 +88,37 @@ function triggerAlert(msg, avatar) {
   const msgText = document.getElementById('alert-message-text');
   const pfpImg = document.getElementById('alert-pfp');
   
-  msgText.textContent = msg;
-  pfpImg.src = avatar;
+  if (msgText) msgText.textContent = msg;
+  if (pfpImg) pfpImg.src = avatar;
   
-  // Reset active classes
-  container.className = 'alert-visible';
+  // Trigger entry animation and show
+  if (container) container.className = 'alert-visible';
   
   if (alertTimeout) clearTimeout(alertTimeout);
   
-  const shouldHide = (previewMode === "no" && alwaysShowOverlay === "no");
+  const isAlwaysShow = (previewMode === "always_show" || previewMode === "yes");
   const duration = parseFloat(document.documentElement.style.getPropertyValue('--duration') || '5') * 1000;
   
-  if (shouldHide) {
+  if (!isAlwaysShow) {
+    // Hide after alert mode: play exit animation, then hide completely
     alertTimeout = setTimeout(() => {
-      container.className = 'alert-exit';
+      if (container) container.className = 'alert-exit';
       alertTimeout = null;
       
-      // If showDefaultText is off, clear text after alert fades out
       setTimeout(() => {
-        if (!alertTimeout && showDefaultText === "no") {
-          msgText.textContent = "";
+        if (!alertTimeout && !isAlwaysShow) {
+          if (container) container.className = 'alert-hidden';
+          if (msgText) msgText.textContent = "";
         }
-      }, 700); // Wait for exit animation to finish
+      }, 700); // Wait for exit animation to complete
     }, duration);
   } else {
-    // If always showing, stay visible and transition back to default resting state after duration
+    // Always show mode: return to default resting state
     alertTimeout = setTimeout(() => {
       alertTimeout = null;
-      msgText.textContent = showDefaultText === "yes" ? defaultMessage : "";
-      pfpImg.src = 'https://static-cdn.jtvnw.net/user-default-pictures-uv/cdd517ad-def8-437d-9a4e-c27c02511a3c-profile_image-70x70.png';
+      if (msgText) msgText.textContent = (showDefaultText === "yes") ? defaultMessage : "";
+      if (pfpImg) pfpImg.src = 'https://static-cdn.jtvnw.net/user-default-pictures-uv/cdd517ad-def8-437d-9a4e-c27c02511a3c-profile_image-70x70.png';
+      if (container) container.className = 'alert-visible';
     }, duration);
   }
 }
