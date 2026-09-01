@@ -2,7 +2,6 @@
 let treatType = "mixed"; // mixed, bones, biscuits, hearts, stars
 let gravity = 0.35;
 let widgetScale = 1.0;
-let maxGoal = 100;
 
 let canvas, ctx;
 let particles = [];
@@ -16,7 +15,6 @@ window.addEventListener('onWidgetLoad', function(obj) {
   
   treatType = fields.treatType || "mixed";
   gravity = (parseInt(fields.gravityPower) || 35) / 100;
-  maxGoal = parseInt(fields.maxGoal) || 100;
   
   const scaleVal = fields.widgetScale !== undefined ? parseInt(fields.widgetScale) : 100;
   widgetScale = (scaleVal || 100) / 100;
@@ -27,8 +25,20 @@ window.addEventListener('onWidgetLoad', function(obj) {
     document.documentElement.style.setProperty('--text-color', fields.textColor);
   }
   
+  const bowlImg = document.getElementById('bowl-img');
+  if (bowlImg) {
+    const cdnUrl = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%20bowl.png";
+    const imgTest = new Image();
+    imgTest.onload = function() {
+      bowlImg.src = cdnUrl;
+    };
+    imgTest.onerror = function() {
+      bowlImg.src = "Dog bowl.png";
+    };
+    imgTest.src = cdnUrl;
+  }
+  
   initPhysics();
-  updateCounterDisplay();
 });
 
 window.addEventListener('onEventReceived', function(obj) {
@@ -81,36 +91,6 @@ function updateCounterDisplay() {
   const numEl = document.getElementById('treat-count-number');
   if (numEl) {
     numEl.textContent = totalCount;
-  }
-  
-  // Calculate goal percentage progress
-  const percent = maxGoal > 0 ? (totalCount / maxGoal) * 100 : 0;
-  
-  let targetImgName = "Dog bowl.png";
-  if (percent >= 100) {
-    targetImgName = "Dog bowl 100.png";
-  } else if (percent >= 75) {
-    targetImgName = "Dog bowl 75.png";
-  } else if (percent >= 50) {
-    targetImgName = "Dog bowl 50.png";
-  } else if (percent >= 25) {
-    targetImgName = "Dog bowl 25.png";
-  }
-  
-  const bowlImg = document.getElementById('bowl-img');
-  if (bowlImg && bowlImg.dataset.activeName !== targetImgName) {
-    bowlImg.dataset.activeName = targetImgName;
-    const encodedName = targetImgName.replace(/ /g, '%20');
-    const cdnUrl = `https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/${encodedName}`;
-    
-    const imgTest = new Image();
-    imgTest.onload = function() {
-      bowlImg.src = cdnUrl;
-    };
-    imgTest.onerror = function() {
-      bowlImg.src = targetImgName;
-    };
-    imgTest.src = cdnUrl;
   }
 }
 
@@ -188,7 +168,7 @@ function updatePhysics() {
 function drawPhysics() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  // Render active falling treats
+  // Render active falling & fading treats
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
     

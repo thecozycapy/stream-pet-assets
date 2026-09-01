@@ -8,12 +8,6 @@
     "step": 5,
     "group": "General Settings"
   },
-  "maxGoal": {
-    "type": "number",
-    "label": "Max Treat Goal",
-    "value": 100,
-    "group": "General Settings"
-  },
   "treatType": {
     "type": "dropdown",
     "label": "Dropped Treat Type",
