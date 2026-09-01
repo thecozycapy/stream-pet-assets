@@ -1,10 +1,10 @@
 // Interactive On-Screen Stream Pet Logic
 const DOG_BREEDS = {
-  "dog1": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%201.png",
-  "dog2": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%202.png",
-  "dog3": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%203.png",
-  "dog4": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%204.png",
-  "dog5": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%205.png"
+  "dog1": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/stream-pet/Dog%201.png",
+  "dog2": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/stream-pet/Dog%202.png",
+  "dog3": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/stream-pet/Dog%203.png",
+  "dog4": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/stream-pet/Dog%204.png",
+  "dog5": "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/stream-pet/Dog%205.png"
 };
 
 let petName = "Rusty";
@@ -45,7 +45,7 @@ window.addEventListener('onWidgetLoad', function(obj) {
   // Set bed image source and dynamic name tag
   const bedImg = document.getElementById('bed-img');
   if (bedImg) {
-    bedImg.src = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%20bed.png";
+    bedImg.src = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/stream-pet/Dog%20bed.png";
   }
   const bedNameText = document.getElementById('bed-name-text');
   if (bedNameText) {

@@ -149,7 +149,7 @@ function updateBowlImage() {
     targetCdnName = "bowl%2025.png";
   }
   
-  const cdnUrl = `https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/${targetCdnName}`;
+  const cdnUrl = `https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/treat-counter/${targetCdnName}`;
   const imgTest = new Image();
   imgTest.onload = function() {
     bowlImg.src = cdnUrl;
