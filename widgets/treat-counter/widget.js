@@ -142,35 +142,25 @@ function physicsLoop() {
 
 function updatePhysics() {
   const centerX = canvas.width / 2;
-  // Opening rim line of Dog bowl.png
-  const bowlTargetY = canvas.height - 24 - (65 * widgetScale);
+  // Target Y level matching the number of treats text on the bowl
+  const numberTextY = canvas.height - 24 - (45 * widgetScale);
   
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
     
-    if (p.state === "falling") {
-      p.vy += gravity * widgetScale;
-      p.x += p.vx;
-      p.y += p.vy;
-      p.angle += p.angularVelocity;
+    p.vy += gravity * widgetScale;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.angle += p.angularVelocity;
+    
+    // When snack reaches the number of treats, update counter and disappear instantly
+    if (p.y >= numberTextY) {
+      totalCount++;
+      updateCounterDisplay();
+      triggerBowlPop();
       
-      // When snack hits the bowl opening level
-      if (p.y >= bowlTargetY) {
-        p.state = "disappearing";
-        totalCount++;
-        updateCounterDisplay();
-        triggerBowlPop();
-      }
-    } else if (p.state === "disappearing") {
-      p.y += p.vy * 0.4;
-      p.alpha -= 0.14;
-      p.scale *= 0.82;
-      
-      // Once fully vanished, remove from particles array
-      if (p.alpha <= 0 || p.scale <= 0.1) {
-        particles.splice(i, 1);
-        i--;
-      }
+      particles.splice(i, 1);
+      i--;
     }
   }
 }
@@ -178,12 +168,17 @@ function updatePhysics() {
 function drawPhysics() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  // Render active falling & fading treats
+  // Hard clipping mask at the number text level to guarantee zero visibility under the bowl
+  const numberTextY = canvas.height - 24 - (45 * widgetScale);
+  
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, canvas.width, numberTextY);
+  ctx.clip();
+  
+  // Render active falling treats
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
-    
-    ctx.save();
-    ctx.globalAlpha = Math.max(0, Math.min(1, p.alpha));
     
     if (p.type === "bone") {
       drawBone(p);
@@ -194,9 +189,9 @@ function drawPhysics() {
     } else if (p.type === "heart") {
       drawHeart(p);
     }
-    
-    ctx.restore();
   }
+  
+  ctx.restore();
 }
 
 // Drawing primitives scaled to widgetScale and particle fade scale
