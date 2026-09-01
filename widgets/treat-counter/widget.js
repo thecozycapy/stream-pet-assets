@@ -29,6 +29,19 @@ window.addEventListener('onWidgetLoad', function(obj) {
     document.documentElement.style.setProperty('--text-color', fields.textColor);
   }
   
+  const bowlImg = document.getElementById('bowl-img');
+  if (bowlImg) {
+    const cdnUrl = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%20bowl.png";
+    const imgTest = new Image();
+    imgTest.onload = function() {
+      bowlImg.src = cdnUrl;
+    };
+    imgTest.onerror = function() {
+      bowlImg.src = "Dog bowl.png";
+    };
+    imgTest.src = cdnUrl;
+  }
+  
   initPhysics();
 });
 
