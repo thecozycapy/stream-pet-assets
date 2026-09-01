@@ -23,7 +23,7 @@
   },
   "resetBowl": {
     "type": "button",
-    "label": "Reset Treats to 0",
+    "label": "Reset Treats to Starting Count",
     "value": "reset",
     "group": "General Settings"
   },
