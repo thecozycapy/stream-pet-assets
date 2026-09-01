@@ -10,11 +10,11 @@
     "label": "Select Pet Breed",
     "value": "dog1",
     "options": {
-      "dog1": "Dog 1 (Golden / Yellow)",
-      "dog2": "Dog 2 (Brown / Lab)",
-      "dog3": "Dog 3 (Black / Pup)",
-      "dog4": "Dog 4 (Fluffy / White)",
-      "dog5": "Dog 5 (Corgi / Red)"
+      "dog1": "Dog 1",
+      "dog2": "Dog 2",
+      "dog3": "Dog 3",
+      "dog4": "Dog 4",
+      "dog5": "Dog 5"
     },
     "group": "General Pet Settings"
   },
