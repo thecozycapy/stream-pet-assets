@@ -37,7 +37,13 @@ window.addEventListener('onWidgetLoad', function(obj) {
     document.documentElement.style.setProperty('--text-color', fields.textColor);
   }
   
-  updateBowlImage();
+  // Handle manual reset from fields setting
+  if (fields.resetBowl === "yes") {
+    resetBowl();
+  } else {
+    updateBowlImage();
+  }
+  
   initPhysics();
 });
 

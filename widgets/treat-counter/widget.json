@@ -5,6 +5,16 @@
     "value": 100,
     "group": "General Settings"
   },
+  "resetBowl": {
+    "type": "dropdown",
+    "label": "Reset Treat Counter to 0",
+    "value": "no",
+    "options": {
+      "no": "Keep Current Treats",
+      "yes": "Reset Treats to 0"
+    },
+    "group": "General Settings"
+  },
   "widgetScale": {
     "type": "slider",
     "label": "Widget Size Scale (%)",
@@ -50,15 +60,6 @@
     "label": "Treats per $1 Tip",
     "value": 5,
     "group": "Treat Rewards"
-  },
-  "maxTreats": {
-    "type": "slider",
-    "label": "Max Accumulation Limit",
-    "value": 50,
-    "min": 10,
-    "max": 100,
-    "step": 5,
-    "group": "Physics Settings"
   },
   "gravityPower": {
     "type": "slider",
