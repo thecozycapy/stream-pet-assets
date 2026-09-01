@@ -26,12 +26,8 @@ window.addEventListener('onWidgetLoad', function(obj) {
   followerTrackType = fields.followerTrackType || "session";
   currentCount = parseCleanNumber(fields.currentCount, 0);
   
-  // If user triggered manual reset in fields settings
-  if (fields.resetGoal === "yes") {
-    currentCount = 0;
-  } 
-  // Otherwise load from StreamElements session metrics if requested
-  else if (followerTrackType === 'total' && session['follower-total']) {
+  // Load from StreamElements session metrics if requested
+  if (followerTrackType === 'total' && session['follower-total']) {
     currentCount = parseCleanNumber(session['follower-total'].count, currentCount);
   } else if (followerTrackType === 'week' && session['follower-week']) {
     currentCount = parseCleanNumber(session['follower-week'].count, currentCount);
