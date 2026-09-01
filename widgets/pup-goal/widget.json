@@ -25,8 +25,18 @@
   },
   "currentCount": {
     "type": "number",
-    "label": "Starting Follower Count",
+    "label": "Starting / Manual Follower Count",
     "value": 0,
+    "group": "Goal Settings"
+  },
+  "resetGoal": {
+    "type": "dropdown",
+    "label": "Reset Follower Goal",
+    "value": "no",
+    "options": {
+      "no": "Keep Current Count",
+      "yes": "Reset Follower Count to 0"
+    },
     "group": "Goal Settings"
   },
   "bgColor": {

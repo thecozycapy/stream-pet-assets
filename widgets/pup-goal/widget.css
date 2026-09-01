@@ -51,6 +51,16 @@ body, html {
   font-family: monospace;
 }
 
+#goal-values::before,
+#goal-values::after,
+#goal-label::before,
+#goal-label::after,
+#goal-percentage::before,
+#goal-percentage::after {
+  content: none !important;
+  display: none !important;
+}
+
 .progress-track-wrapper {
   position: relative;
   width: 90%;

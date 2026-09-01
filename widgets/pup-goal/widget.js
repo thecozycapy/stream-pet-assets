@@ -26,8 +26,12 @@ window.addEventListener('onWidgetLoad', function(obj) {
   followerTrackType = fields.followerTrackType || "session";
   currentCount = parseCleanNumber(fields.currentCount, 0);
   
-  // If user selected tracking from StreamElements historical metrics
-  if (followerTrackType === 'total' && session['follower-total']) {
+  // If user triggered manual reset in fields settings
+  if (fields.resetGoal === "yes") {
+    currentCount = 0;
+  } 
+  // Otherwise load from StreamElements session metrics if requested
+  else if (followerTrackType === 'total' && session['follower-total']) {
     currentCount = parseCleanNumber(session['follower-total'].count, currentCount);
   } else if (followerTrackType === 'week' && session['follower-week']) {
     currentCount = parseCleanNumber(session['follower-week'].count, currentCount);
@@ -128,13 +132,20 @@ function updateGoalUI() {
   if (currentCount > goalTarget) currentCount = goalTarget;
   
   // Format pure numbers without any dollar signs or currency symbols
+  const cleanCount = parseCleanNumber(currentCount, 0);
+  const cleanTarget = parseCleanNumber(goalTarget, 100);
   const valuesText = document.getElementById('goal-values');
   const percentText = document.getElementById('goal-percentage');
-  if (valuesText) valuesText.textContent = `${currentCount} / ${goalTarget}`;
   
-  const percentage = goalTarget > 0 ? (currentCount / goalTarget) : 0;
+  if (valuesText) {
+    valuesText.textContent = `${cleanCount} / ${cleanTarget}`;
+  }
+  
+  const percentage = cleanTarget > 0 ? (cleanCount / cleanTarget) : 0;
   const percentageRounded = Math.round(percentage * 100);
-  if (percentText) percentText.textContent = `${percentageRounded}%`;
+  if (percentText) {
+    percentText.textContent = `${percentageRounded}%`;
+  }
   
   // Update Progress fill and Dog position
   const fill = document.getElementById('progress-bar-fill');
