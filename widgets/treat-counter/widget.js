@@ -2,6 +2,7 @@
 let treatType = "mixed"; // mixed, bones, biscuits, hearts, stars
 let gravity = 0.35;
 let widgetScale = 1.0;
+let treatGoal = 100;
 
 let canvas, ctx;
 let particles = [];
@@ -15,6 +16,7 @@ window.addEventListener('onWidgetLoad', function(obj) {
   
   treatType = fields.treatType || "mixed";
   gravity = (parseInt(fields.gravityPower) || 35) / 100;
+  treatGoal = parseInt(fields.treatGoal) || 100;
   
   const scaleVal = fields.widgetScale !== undefined ? parseInt(fields.widgetScale) : 100;
   widgetScale = (scaleVal || 100) / 100;
@@ -25,19 +27,7 @@ window.addEventListener('onWidgetLoad', function(obj) {
     document.documentElement.style.setProperty('--text-color', fields.textColor);
   }
   
-  const bowlImg = document.getElementById('bowl-img');
-  if (bowlImg) {
-    const cdnUrl = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog%20bowl.png";
-    const imgTest = new Image();
-    imgTest.onload = function() {
-      bowlImg.src = cdnUrl;
-    };
-    imgTest.onerror = function() {
-      bowlImg.src = "Dog bowl.png";
-    };
-    imgTest.src = cdnUrl;
-  }
-  
+  updateBowlImage();
   initPhysics();
 });
 
@@ -92,6 +82,41 @@ function updateCounterDisplay() {
   if (numEl) {
     numEl.textContent = totalCount;
   }
+  updateBowlImage();
+}
+
+// Dynamic bowl image progression based on % of treat goal reached
+function updateBowlImage() {
+  const bowlImg = document.getElementById('bowl-img');
+  if (!bowlImg) return;
+  
+  const percentage = treatGoal > 0 ? (totalCount / treatGoal) * 100 : 0;
+  let targetImageName = "Dog bowl.png";
+  let targetCdnName = "Dog%20bowl.png";
+  
+  if (percentage >= 100) {
+    targetImageName = "bowl 100.png";
+    targetCdnName = "bowl%20100.png";
+  } else if (percentage >= 75) {
+    targetImageName = "bowl 75.png";
+    targetCdnName = "bowl%2075.png";
+  } else if (percentage >= 50) {
+    targetImageName = "bowl 50.png";
+    targetCdnName = "bowl%2050.png";
+  } else if (percentage >= 25) {
+    targetImageName = "bowl 25.png";
+    targetCdnName = "bowl%2025.png";
+  }
+  
+  const cdnUrl = `https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/${targetCdnName}`;
+  const imgTest = new Image();
+  imgTest.onload = function() {
+    bowlImg.src = cdnUrl;
+  };
+  imgTest.onerror = function() {
+    bowlImg.src = targetImageName;
+  };
+  imgTest.src = cdnUrl;
 }
 
 // Spawns treats falling from top towards the bowl
@@ -168,7 +193,7 @@ function updatePhysics() {
 function drawPhysics() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  // Render active falling & fading treats
+  // Render active falling treats
   for (let i = 0; i < particles.length; i++) {
     let p = particles[i];
     
@@ -189,7 +214,7 @@ function drawPhysics() {
   }
 }
 
-// Drawing primitives scaled to widgetScale and particle fade scale
+// Drawing primitives scaled to widgetScale
 function drawBone(p) {
   ctx.save();
   ctx.translate(p.x, p.y);

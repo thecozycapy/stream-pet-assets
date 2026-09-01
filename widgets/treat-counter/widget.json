@@ -1,4 +1,10 @@
 {
+  "treatGoal": {
+    "type": "number",
+    "label": "Treat Goal Target",
+    "value": 100,
+    "group": "General Settings"
+  },
   "widgetScale": {
     "type": "slider",
     "label": "Widget Size Scale (%)",
@@ -36,15 +42,6 @@
     "value": 35,
     "min": 10,
     "max": 80,
-    "step": 5,
-    "group": "Physics Settings"
-  },
-  "bounciness": {
-    "type": "slider",
-    "label": "Bounciness (Restitution)",
-    "value": 55,
-    "min": 10,
-    "max": 90,
     "step": 5,
     "group": "Physics Settings"
   },
