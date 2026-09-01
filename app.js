@@ -370,18 +370,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         wrapper.appendChild(select);
       } 
-      else if (field.type === 'button') {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'event-trigger-btn';
-        btn.style.width = '100%';
-        btn.style.marginTop = '0.25rem';
-        btn.innerHTML = `<i data-lucide="rotate-ccw"></i> <span>${field.label}</span>`;
-        btn.addEventListener('click', () => {
-          triggerWidgetEvent('widget-button', { field: field.name, name: field.name, value: field.value });
-        });
-        wrapper.appendChild(btn);
-      }
       else {
         // Fallback for standard text/number
         const input = document.createElement('input');

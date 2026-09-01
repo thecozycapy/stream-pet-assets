@@ -1,6 +1,5 @@
-/* Dog Bowl Treat Counter Styles */
+/* Dog Bowl Styles */
 :root {
-  --bowl-color: #e5a93b;
   --text-color: #ffffff;
   --widget-scale: 1;
   --font-bowl: 'Outfit', 'Inter', sans-serif;
@@ -21,9 +20,6 @@ body, html {
   height: 100%;
   font-family: var(--font-bowl);
   overflow: hidden;
-  transform: scale(var(--widget-scale, 1));
-  transform-origin: bottom center;
-  transition: transform 0.2s ease;
 }
 
 #physics-canvas {
@@ -38,43 +34,44 @@ body, html {
 
 #foreground-bowl-container {
   position: absolute;
-  bottom: 12px;
+  bottom: 24px;
   left: 50%;
-  transform: translateX(-50%);
-  width: 260px;
-  z-index: 20; /* Render bowl image over physics canvas so treats drop INSIDE the bowl rim */
+  transform: translateX(-50%) scale(var(--widget-scale, 1));
+  transform-origin: bottom center;
+  width: 280px;
+  height: auto;
+  z-index: 50;
   pointer-events: none;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  filter: drop-shadow(0 10px 18px rgba(0,0,0,0.4));
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.4));
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 #bowl-img {
-  width: 260px;
+  width: 100%;
   height: auto;
   display: block;
-  object-fit: contain;
 }
 
 #treat-count-display {
   position: absolute;
-  bottom: 22px;
+  top: 55%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
   color: var(--text-color);
-  line-height: 1.1;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+  line-height: 1.05;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
   pointer-events: none;
 }
 
 #treat-count-number {
-  font-size: 1.75rem;
-  font-weight: 800;
+  font-size: 1.8rem;
+  font-weight: 900;
   letter-spacing: 0.5px;
 }
 
@@ -86,12 +83,16 @@ body, html {
   text-transform: uppercase;
 }
 
-/* Treat scale pop trigger */
+/* Treat bounce pop trigger for the bowl */
 #foreground-bowl-container.pop-alert {
   animation: bowl-pop 0.35s ease-out;
 }
 
 @keyframes bowl-pop {
-  0%, 100% { transform: translateX(-50%) scale(1); }
-  50% { transform: translateX(-50%) scale(1.08) translateY(-6px); }
+  0%, 100% { 
+    transform: translateX(-50%) scale(var(--widget-scale, 1)); 
+  }
+  50% { 
+    transform: translateX(-50%) scale(calc(var(--widget-scale, 1) * 1.08)) translateY(-6px); 
+  }
 }
