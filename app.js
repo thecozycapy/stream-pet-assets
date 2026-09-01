@@ -370,6 +370,22 @@ document.addEventListener('DOMContentLoaded', () => {
         
         wrapper.appendChild(select);
       } 
+      else if (field.type === 'button') {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn btn-secondary';
+        btn.style.width = '100%';
+        btn.style.padding = '0.65rem 1rem';
+        btn.style.marginTop = '0.25rem';
+        btn.textContent = field.label || 'Reset';
+        
+        btn.addEventListener('click', () => {
+          triggerWidgetEvent('simulate-reset', {});
+          updateFieldValue(field.name, 'reset');
+        });
+        
+        wrapper.appendChild(btn);
+      } 
       else {
         // Fallback for standard text/number
         const input = document.createElement('input');

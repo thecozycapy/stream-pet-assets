@@ -26,8 +26,8 @@ window.addEventListener('onWidgetLoad', function(obj) {
   followerTrackType = fields.followerTrackType || "session";
   currentCount = parseCleanNumber(fields.currentCount, 0);
   
-  // If user triggered manual reset in fields settings
-  if (fields.resetGoal === "yes") {
+  // If user triggered manual reset button in fields settings
+  if (fields.resetGoal === "reset" || fields.resetGoal === "yes") {
     currentCount = 0;
   } 
   // Otherwise load from StreamElements session metrics if requested
@@ -129,7 +129,7 @@ window.addEventListener('onSessionUpdate', function(obj) {
 
 function updateGoalUI() {
   if (currentCount < 0) currentCount = 0;
-  if (currentCount > goalTarget) currentCount = goalTarget;
+  // Progress can exceed 100/100 to show extra followers
   
   // Format pure numbers without any dollar signs or currency symbols
   const cleanCount = parseCleanNumber(currentCount, 0);
@@ -147,17 +147,18 @@ function updateGoalUI() {
     percentText.textContent = `${percentageRounded}%`;
   }
   
-  // Update Progress fill and Dog position
+  // Update Progress fill and Dog position (capped visually at 100% so dog remains next to target bone)
+  const visualPercentage = Math.min(percentageRounded, 100);
   const fill = document.getElementById('progress-bar-fill');
   const dog = document.getElementById('doggo-runner');
   const bone = document.getElementById('target-bone');
   
-  if (fill) fill.style.width = `${percentageRounded}%`;
-  if (dog) dog.style.left = `calc(${percentageRounded}% - 16px)`;
+  if (fill) fill.style.width = `${visualPercentage}%`;
+  if (dog) dog.style.left = `calc(${visualPercentage}% - 16px)`;
   
-  // If goal reached, start celebration animations
+  // If goal reached or exceeded, maintain celebration animations
   const container = document.getElementById('goal-widget-container');
-  if (percentageRounded >= 100) {
+  if (cleanCount >= cleanTarget && cleanTarget > 0) {
     if (bone) bone.classList.add('bone-celebrate');
     if (dog) dog.classList.add('dog-celebrate');
     if (container) container.classList.add('goal-celebrate');

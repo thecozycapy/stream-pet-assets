@@ -30,13 +30,9 @@
     "group": "Goal Settings"
   },
   "resetGoal": {
-    "type": "dropdown",
+    "type": "button",
     "label": "Reset Follower Goal",
-    "value": "no",
-    "options": {
-      "no": "Keep Current Count",
-      "yes": "Reset Follower Count to 0"
-    },
+    "value": "reset",
     "group": "Goal Settings"
   },
   "bgColor": {
