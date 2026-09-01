@@ -373,19 +373,15 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (field.type === 'button') {
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'btn btn-secondary';
+        btn.className = 'event-trigger-btn';
         btn.style.width = '100%';
-        btn.style.padding = '0.65rem 1rem';
         btn.style.marginTop = '0.25rem';
-        btn.textContent = field.label || 'Reset';
-        
+        btn.innerHTML = `<i data-lucide="rotate-ccw"></i> <span>${field.label}</span>`;
         btn.addEventListener('click', () => {
-          triggerWidgetEvent('simulate-reset', {});
-          updateFieldValue(field.name, 'reset');
+          triggerWidgetEvent('widget-button', { field: field.name, name: field.name, value: field.value });
         });
-        
         wrapper.appendChild(btn);
-      } 
+      }
       else {
         // Fallback for standard text/number
         const input = document.createElement('input');
