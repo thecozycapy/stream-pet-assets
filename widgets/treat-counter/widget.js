@@ -3,18 +3,18 @@ let treatType = "mixed"; // mixed, bones, biscuits, hearts, stars
 let gravity = 0.35;
 let widgetScale = 1.0;
 let treatGoal = 100;
+let startingTreats = 0;
+let autoResetSession = "yes";
+let isFirstLoad = true;
 
 let followerTreats = 1;
-let subTreats = 5;
+let subTreats = 10;
 let cheerTreats = 5;
 let tipTreats = 5;
 
 let canvas, ctx;
 let particles = [];
-
-// Persistent treat count across StreamElements field reloads
-let totalCount = parseInt(localStorage.getItem('dog_bowl_count') || '0', 10);
-if (isNaN(totalCount)) totalCount = 0;
+let totalCount = 0;
 
 // Animation loop request ID
 let animFrameId = null;
@@ -22,13 +22,11 @@ let animFrameId = null;
 window.addEventListener('onWidgetLoad', function(obj) {
   const fields = (obj && obj.detail && obj.detail.fieldData) ? obj.detail.fieldData : {};
   
-  // Restore persistent count
-  totalCount = parseInt(localStorage.getItem('dog_bowl_count') || '0', 10);
-  if (isNaN(totalCount)) totalCount = 0;
-  
   treatType = fields.treatType || "mixed";
   gravity = (parseInt(fields.gravityPower) || 35) / 100;
   treatGoal = parseInt(fields.treatGoal) || 100;
+  startingTreats = fields.startingTreats !== undefined ? parseInt(fields.startingTreats) : 0;
+  autoResetSession = fields.autoResetSession || "yes";
   
   followerTreats = fields.followerTreats !== undefined ? parseInt(fields.followerTreats) : 1;
   subTreats = fields.subTreats !== undefined ? parseInt(fields.subTreats) : 5;
@@ -38,6 +36,16 @@ window.addEventListener('onWidgetLoad', function(obj) {
   const scaleVal = fields.widgetScale !== undefined ? parseInt(fields.widgetScale) : 100;
   widgetScale = (scaleVal || 100) / 100;
   
+  // Initialize starting treat count on initial session load
+  if (isFirstLoad) {
+    if (autoResetSession === "yes") {
+      totalCount = startingTreats;
+    } else {
+      totalCount = Math.max(totalCount, startingTreats);
+    }
+    isFirstLoad = false;
+  }
+  
   // Set custom CSS variables
   document.documentElement.style.setProperty('--widget-scale', widgetScale);
   if (fields.textColor) {
@@ -45,6 +53,7 @@ window.addEventListener('onWidgetLoad', function(obj) {
   }
   
   // Preserve current count and update bowl image & display on setting changes
+  updateBowlImage();
   updateCounterDisplay();
   initPhysics();
 });
@@ -105,8 +114,7 @@ function resizeCanvas() {
 // Resets/Empties the bowl
 function resetBowl() {
   particles = [];
-  totalCount = 0;
-  localStorage.setItem('dog_bowl_count', '0');
+  totalCount = startingTreats;
   updateCounterDisplay();
 }
 
@@ -115,7 +123,6 @@ function updateCounterDisplay() {
   if (numEl) {
     numEl.textContent = totalCount;
   }
-  localStorage.setItem('dog_bowl_count', totalCount.toString());
   updateBowlImage();
 }
 

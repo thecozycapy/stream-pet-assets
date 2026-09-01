@@ -1,4 +1,20 @@
 {
+  "startingTreats": {
+    "type": "number",
+    "label": "Starting / Initial Treat Count",
+    "value": 0,
+    "group": "General Settings"
+  },
+  "autoResetSession": {
+    "type": "dropdown",
+    "label": "Auto-Reset Every Stream Session",
+    "value": "yes",
+    "options": {
+      "yes": "Reset to Starting Count Each Stream",
+      "no": "Keep Accumulating Across Streams"
+    },
+    "group": "General Settings"
+  },
   "treatGoal": {
     "type": "number",
     "label": "Treat Goal Target",
