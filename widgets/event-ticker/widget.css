@@ -1,9 +1,10 @@
-/* Animated Event Ticker / Banner Styles */
+﻿/* Animated Event Ticker / Banner Styles */
 :root {
   --banner-bg: rgba(32, 23, 20, 0.85);
   --text-color: #ffffff;
   --accent-color: #e5a93b;
-  --scroll-speed: 20s;
+  --scroll-speed: 25s;
+  --banner-height: 52px;
   --font-ticker: 'Outfit', 'Inter', sans-serif;
 }
 
@@ -21,14 +22,16 @@ body, html {
   width: 100%;
   height: 100%;
   font-family: var(--font-ticker);
+  overflow: hidden;
 }
 
-/* Banner positioned top or bottom */
+/* Banner bar container */
 #ticker-banner {
   position: absolute;
   left: 0;
   width: 100%;
-  height: 52px;
+  height: var(--banner-height, 52px);
+  min-height: 40px;
   background: var(--banner-bg);
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
@@ -39,97 +42,161 @@ body, html {
   box-sizing: border-box;
 }
 
-/* Position overrides class set by JS */
+/* Position options */
 #ticker-banner.pos-top {
   top: 0;
+  bottom: auto;
   border-bottom: 3px solid var(--accent-color);
   border-top: none;
 }
 
 #ticker-banner.pos-bottom {
   bottom: 0;
+  top: auto;
   border-top: 3px solid var(--accent-color);
   border-bottom: none;
+}
+
+#ticker-banner.pos-fill,
+#ticker-banner.pos-center {
+  top: 50%;
+  transform: translateY(-50%);
+  bottom: auto;
+  border-top: 2px solid var(--accent-color);
+  border-bottom: 2px solid var(--accent-color);
 }
 
 /* Walking dog runner */
 #ticker-runner {
   position: absolute;
-  left: 16px;
-  width: 32px;
-  height: 32px;
+  left: 14px;
+  width: calc(var(--banner-height, 52px) * 0.72);
+  height: calc(var(--banner-height, 52px) * 0.78);
+  max-width: 46px;
+  max-height: 46px;
   z-index: 200;
-  /* Happy trot keyframes */
-  animation: dog-trot 0.7s infinite alternate ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+#ticker-runner-bob {
+  width: 90%;
+  height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: dog-walk-bob 0.45s infinite alternate ease-in-out;
+  transform-origin: bottom center;
 }
 
 #ticker-dog-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
 }
 
-@keyframes dog-trot {
+#ticker-runner-shadow {
+  width: 65%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 50%;
+  margin-top: -1px;
+  animation: shadow-scale 0.45s infinite alternate ease-in-out;
+}
+
+@keyframes dog-walk-bob {
   0% {
-    transform: translateY(-2px) rotate(-6deg) scaleY(0.95);
+    transform: translateY(2px) rotate(-7deg) scale(0.97, 0.93);
+  }
+  50% {
+    transform: translateY(-5px) rotate(0deg) scale(1.02, 1.07);
   }
   100% {
-    transform: translateY(2px) rotate(6deg) scaleY(1.05);
+    transform: translateY(2px) rotate(7deg) scale(0.97, 0.93);
   }
 }
 
-/* Conveyor marquee track */
+@keyframes shadow-scale {
+  0% {
+    transform: scale(1.15);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0.85);
+    opacity: 0.25;
+  }
+}
+
+/* Marquee track */
 #ticker-track {
   flex: 1;
-  margin-left: 65px; /* Offset to clear walking dog space */
+  margin-left: calc(var(--banner-height, 52px) + 14px);
   overflow: hidden;
   display: flex;
   height: 100%;
   align-items: center;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%);
 }
 
 .marquee-scroller {
   display: flex;
   width: max-content;
+  will-change: transform;
+  animation: scroll-marquee var(--scroll-speed, 25s) linear infinite;
+}
+
+.marquee-half {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .scroller-inner {
   display: flex;
   align-items: center;
-  gap: 4rem;
-  padding-right: 4rem;
+  gap: 3.5rem;
+  padding-right: 3.5rem;
   white-space: nowrap;
-  animation: scroll-marquee var(--scroll-speed) linear infinite;
-  height: 100%;
+  flex-shrink: 0;
 }
 
 @keyframes scroll-marquee {
   0% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
-/* Event text elements inside scrolling belt */
+/* Event items */
 .ticker-item {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--text-color);
   letter-spacing: 0.2px;
 }
 
 .ticker-icon {
-  font-size: 1rem;
+  font-size: 1.1rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ticker-label {
-  opacity: 0.7;
-  font-size: 0.7rem;
+  opacity: 0.75;
+  font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 1.2px;
   text-transform: uppercase;
@@ -138,5 +205,25 @@ body, html {
 .ticker-value {
   color: var(--accent-color);
   text-shadow: 0 0 8px color-mix(in srgb, var(--accent-color), transparent 60%);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
+  display: inline-block;
+  transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* Highlight flash when value updates dynamically */
+.item-update-flash {
+  animation: item-flash-glow 0.8s ease-out;
+}
+
+@keyframes item-flash-glow {
+  0% {
+    color: #ffffff;
+    text-shadow: 0 0 16px #ffffff, 0 0 24px var(--accent-color);
+    transform: scale(1.08);
+  }
+  100% {
+    color: var(--accent-color);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--accent-color), transparent 60%);
+    transform: scale(1);
+  }
 }

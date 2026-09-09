@@ -1,4 +1,4 @@
-// Dog Bowl Treat Counter Logic
+﻿// Dog Bowl Treat Counter Logic
 let treatType = "mixed"; // mixed, bones, biscuits, hearts, stars
 let gravity = 0.35;
 let widgetScale = 1.0;
@@ -149,15 +149,33 @@ function updateBowlImage() {
     targetCdnName = "bowl%2025.png";
   }
   
-  const cdnUrl = `https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/treat-counter/${targetCdnName}`;
-  const imgTest = new Image();
-  imgTest.onload = function() {
-    bowlImg.src = cdnUrl;
-  };
-  imgTest.onerror = function() {
-    bowlImg.src = targetImageName;
-  };
-  imgTest.src = cdnUrl;
+  // Resilient multi-source fallback sequence:
+  // 1. Local path relative to portfolio web server: widgets/treat-counter/bowl 25.png
+  // 2. Direct local root/relative path: bowl 25.png
+  // 3. CDN root URL: https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/bowl%2025.png
+  // 4. CDN widgets subfolder URL: https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/treat-counter/bowl%2025.png
+  const sources = [
+    `widgets/treat-counter/${encodeURIComponent(targetImageName)}`,
+    targetImageName,
+    `https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/${targetCdnName}`,
+    `https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/treat-counter/${targetCdnName}`
+  ];
+
+  let currentSourceIndex = 0;
+  function tryNextSource() {
+    if (currentSourceIndex >= sources.length) return;
+    const src = sources[currentSourceIndex++];
+    const testImg = new Image();
+    testImg.onload = function() {
+      bowlImg.src = src;
+    };
+    testImg.onerror = function() {
+      tryNextSource();
+    };
+    testImg.src = src;
+  }
+
+  tryNextSource();
 }
 
 // Spawns treats falling from top towards the bowl

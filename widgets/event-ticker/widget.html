@@ -1,20 +1,26 @@
-<!-- Animated Event Ticker / Banner HTML -->
+﻿<!-- Animated Event Ticker / Banner HTML -->
 <div id="ticker-widget-container">
   <div id="ticker-banner">
-    <!-- Walking Dog Runner (Animated walk in place) -->
+    <!-- Walking Dog Runner (Animated walk cycle) -->
     <div id="ticker-runner">
-      <img id="ticker-dog-img" src="../../Dog.png" alt="Walking Dog">
+      <div id="ticker-runner-bob">
+        <img id="ticker-dog-img" src="widgets/event-ticker/Dog.png" alt="Walking Dog" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog.png';">
+      </div>
+      <div id="ticker-runner-shadow"></div>
     </div>
 
     <!-- Scrolling Text Container -->
     <div id="ticker-track">
       <div class="marquee-scroller" id="marquee-scroller">
-        <!-- Inside here we will dynamically generate duplicate scroller elements for infinite looping -->
-        <div class="scroller-inner" id="scroller-1">
-          <!-- Dynamic contents injected by JS -->
+        <!-- Half A (Loop Segment 1 & 2) -->
+        <div class="marquee-half" id="marquee-half-1">
+          <div class="scroller-inner"></div>
+          <div class="scroller-inner"></div>
         </div>
-        <div class="scroller-inner" id="scroller-2">
-          <!-- Duplicate contents injected by JS -->
+        <!-- Half B (Seamless Duplicate Segment 1 & 2) -->
+        <div class="marquee-half" id="marquee-half-2">
+          <div class="scroller-inner"></div>
+          <div class="scroller-inner"></div>
         </div>
       </div>
     </div>

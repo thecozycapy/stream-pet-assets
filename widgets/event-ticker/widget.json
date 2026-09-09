@@ -1,35 +1,23 @@
-{
+﻿{
   "bannerPosition": {
     "type": "dropdown",
-    "label": "Banner Screen Position",
-    "value": "bottom",
+    "label": "Banner Position",
+    "value": "top",
     "options": {
-      "top": "Top of Screen",
-      "bottom": "Bottom of Screen"
-    }
+      "top": "Top of Screen / Box",
+      "bottom": "Bottom of Screen / Box",
+      "fill": "Center / Fill Widget Box"
+    },
+    "group": "General Settings"
   },
-  "bgColor": {
-    "type": "colorpicker",
-    "label": "Banner Background Color",
-    "value": "#201714"
-  },
-  "bgOpacity": {
+  "bannerHeight": {
     "type": "slider",
-    "label": "Background Opacity (%)",
-    "value": 85,
-    "min": 10,
-    "max": 100,
-    "step": 5
-  },
-  "textColor": {
-    "type": "colorpicker",
-    "label": "Text Base Color",
-    "value": "#ffffff"
-  },
-  "accentColor": {
-    "type": "colorpicker",
-    "label": "Accent / Highlight Color",
-    "value": "#e5a93b"
+    "label": "Banner Bar Height (px)",
+    "value": 52,
+    "min": 40,
+    "max": 90,
+    "step": 2,
+    "group": "General Settings"
   },
   "scrollSpeed": {
     "type": "slider",
@@ -37,6 +25,64 @@
     "value": 20,
     "min": 10,
     "max": 45,
-    "step": 1
+    "step": 1,
+    "group": "General Settings"
+  },
+  "dogImage": {
+    "type": "image-input",
+    "label": "Custom Walking Dog Image",
+    "value": "",
+    "group": "Dog Runner"
+  },
+  "followIcon": {
+    "type": "text",
+    "label": "Follower Emote / Icon",
+    "value": "🐾",
+    "group": "Custom Emotes"
+  },
+  "subIcon": {
+    "type": "text",
+    "label": "Subscriber Emote / Icon",
+    "value": "⭐",
+    "group": "Custom Emotes"
+  },
+  "tipIcon": {
+    "type": "text",
+    "label": "Tip Emote / Icon",
+    "value": "💰",
+    "group": "Custom Emotes"
+  },
+  "cheerIcon": {
+    "type": "text",
+    "label": "Cheer / Bits Emote / Icon",
+    "value": "💎",
+    "group": "Custom Emotes"
+  },
+  "bgColor": {
+    "type": "colorpicker",
+    "label": "Banner Background Color",
+    "value": "#201714",
+    "group": "Colors & Style"
+  },
+  "bgOpacity": {
+    "type": "slider",
+    "label": "Background Opacity (%)",
+    "value": 85,
+    "min": 10,
+    "max": 100,
+    "step": 5,
+    "group": "Colors & Style"
+  },
+  "textColor": {
+    "type": "colorpicker",
+    "label": "Text Base Color",
+    "value": "#ffffff",
+    "group": "Colors & Style"
+  },
+  "accentColor": {
+    "type": "colorpicker",
+    "label": "Accent / Highlight Color",
+    "value": "#e5a93b",
+    "group": "Colors & Style"
   }
 }
