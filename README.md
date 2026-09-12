@@ -11,6 +11,10 @@ This repository contains custom widgets for StreamElements, formatted and struct
 4. Click on the new widget, open the **Settings** menu on the left side, and click **Open Editor**.
 5. Copy the contents of the four files (`widget.html`, `widget.css`, `widget.js`, `widget.json`) from the respective widget directory and paste them into their tabs in the StreamElements code editor.
 6. Click **Done** and then **Save** the overlay!
+
+
+
+
 ![Alt Text](./documentation/Alert-box.png)
 ![Alt Text](./documentation/Alert-box-follow.png)
 ![Alt Text](./documentation/Dog-bowl.png)
