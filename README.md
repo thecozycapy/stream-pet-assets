@@ -12,6 +12,7 @@ This repository contains custom widgets for StreamElements, formatted and struct
 5. Copy the contents of the four files (`widget.html`, `widget.css`, `widget.js`, `widget.json`) from the respective widget directory and paste them into their tabs in the StreamElements code editor.
 6. Click **Done** and then **Save** the overlay!
 
+## Widgets information
 All widgets are animated and tested in Streamelements. 
 
 **Features & Included Overlays**
