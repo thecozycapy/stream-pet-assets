@@ -12,23 +12,6 @@ This repository contains custom widgets for StreamElements, formatted and struct
 5. Copy the contents of the four files (`widget.html`, `widget.css`, `widget.js`, `widget.json`) from the respective widget directory and paste them into their tabs in the StreamElements code editor.
 6. Click **Done** and then **Save** the overlay!
 
-<p align="center">
-
-![Alt Text](./documentation/Alert-box.png)
-![Alt Text](./documentation/Alert-box-follow.png)
-![Alt Text](./documentation/Dog-bowl.png)
-![Alt Text](./documentation/Dog-bowl-animation.png)
-![Alt Text](./documentation/Dog-bowl-fill.png)
-![Alt Text](./documentation/Dog-bowl-filled.png)
-![Alt Text](./documentation/Follower-goal.png)
-![Alt Text](./documentation/Interactive-pet.png)
-![Alt Text](./documentation/Interactive-pet-bark.png)
-![Alt Text](./documentation/Interactive-pet-pet.png)
-![Alt Text](./documentation/Pup-bubble-chat.png)
-![Alt Text](./documentation/Walking-dog-ticker.png)
-![Alt Text](./documentation/Walking-dog-ticker-filled.png)
-</p>
-
 All widgets are animated and tested in Streamelements. 
 
 **Features & Included Overlays**
@@ -45,3 +28,18 @@ Once the `fields.json` code is pasted into the Fields tab, you can customize the
 - Change primary and secondary accent colors
 - Adjust text font sizes and display durations
 - Set custom messages
+
+
+![Alt Text](./documentation/Alert-box.png)
+![Alt Text](./documentation/Alert-box-follow.png)
+![Alt Text](./documentation/Dog-bowl.png)
+![Alt Text](./documentation/Dog-bowl-animation.png)
+![Alt Text](./documentation/Dog-bowl-fill.png)
+![Alt Text](./documentation/Dog-bowl-filled.png)
+![Alt Text](./documentation/Follower-goal.png)
+![Alt Text](./documentation/Interactive-pet.png)
+![Alt Text](./documentation/Interactive-pet-bark.png)
+![Alt Text](./documentation/Interactive-pet-pet.png)
+![Alt Text](./documentation/Pup-bubble-chat.png)
+![Alt Text](./documentation/Walking-dog-ticker.png)
+![Alt Text](./documentation/Walking-dog-ticker-filled.png)
