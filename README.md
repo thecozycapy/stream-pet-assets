@@ -12,7 +12,7 @@ This repository contains custom widgets for StreamElements, formatted and struct
 5. Copy the contents of the four files (`widget.html`, `widget.css`, `widget.js`, `widget.json`) from the respective widget directory and paste them into their tabs in the StreamElements code editor.
 6. Click **Done** and then **Save** the overlay!
 
-<div class="avatar-container">
+<p align="center">
 
 ![Alt Text](./documentation/Alert-box.png)
 ![Alt Text](./documentation/Alert-box-follow.png)
@@ -27,7 +27,6 @@ This repository contains custom widgets for StreamElements, formatted and struct
 ![Alt Text](./documentation/Pup-bubble-chat.png)
 ![Alt Text](./documentation/Walking-dog-ticker.png)
 ![Alt Text](./documentation/Walking-dog-ticker-filled.png)
-</div>
 
 All widgets are animated and tested in Streamelements. 
 
