@@ -1,8 +1,10 @@
 # Ignore all root-level portfolio application files
 /*
 
-# Explicitly track and keep the widgets package folder
+# Explicitly track and keep the widgets package folder and documentation
 !/widgets/
+!/Documentation/
+!/documentation/
 !/.gitignore
 !/README.md
 
