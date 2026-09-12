@@ -1,4 +1,13 @@
-# Ignored files
+# Ignore all root-level portfolio application files
+/*
+
+# Explicitly track and keep the widgets package folder
+!/widgets/
+!/.gitignore
+!/README.md
+
+# Operating System temporary files
 .DS_Store
 Thumbs.db
 *.log
+

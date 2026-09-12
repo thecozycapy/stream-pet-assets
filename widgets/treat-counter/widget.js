@@ -1,4 +1,4 @@
-﻿// Dog Bowl Treat Counter Logic
+// Dog Bowl Treat Counter Logic
 let treatType = "mixed"; // mixed, bones, biscuits, hearts, stars
 let gravity = 0.35;
 let widgetScale = 1.0;
@@ -151,14 +151,12 @@ function updateBowlImage() {
   
   // Resilient multi-source fallback sequence:
   // 1. Local path relative to portfolio web server: widgets/treat-counter/bowl 25.png
-  // 2. Direct local root/relative path: bowl 25.png
-  // 3. CDN root URL: https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/bowl%2025.png
-  // 4. CDN widgets subfolder URL: https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/treat-counter/bowl%2025.png
+  // 2. CDN widgets subfolder URL: https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/treat-counter/bowl%2025.png
+  // 3. Direct local relative path fallback: bowl 25.png
   const sources = [
     `widgets/treat-counter/${encodeURIComponent(targetImageName)}`,
-    targetImageName,
-    `https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/${targetCdnName}`,
-    `https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/treat-counter/${targetCdnName}`
+    `https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/treat-counter/${targetCdnName}`,
+    targetImageName
   ];
 
   let currentSourceIndex = 0;

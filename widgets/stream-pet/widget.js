@@ -110,7 +110,7 @@ function triggerPat() {
   }
   
   if (hand) {
-    hand.src = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/hand.png";
+    hand.src = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/stream-pet/hand.png";
     hand.classList.add('active');
     setTimeout(() => {
       hand.classList.remove('active');

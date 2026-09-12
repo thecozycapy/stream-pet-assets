@@ -19,7 +19,7 @@ let subIcon = "\u2B50";         // ?
 let tipIcon = "\uD83D\uDCB0";    // ??
 let cheerIcon = "\uD83D\uDC8E";  // ??
 
-const DEFAULT_DOG_URL = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog.png";
+const DEFAULT_DOG_URL = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/event-ticker/Dog.png";
 const LOCAL_DOG_URL = "widgets/event-ticker/Dog.png";
 
 // Helper function to extract username and amount from any StreamElements format

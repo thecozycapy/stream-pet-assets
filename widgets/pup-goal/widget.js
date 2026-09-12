@@ -3,7 +3,7 @@ let goalTitle = "Follower Goal";
 let goalTarget = 100;
 let currentCount = 0;
 let followerTrackType = "session";
-const DOG_IMAGE_URL = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/Dog.png";
+const DOG_IMAGE_URL = "https://cdn.jsdelivr.net/gh/thecozycapy/stream-pet-assets@main/widgets/pup-goal/Dog.png";
 
 // Robust number sanitizer to strip dollar signs, currencies, and non-numeric characters
 function parseCleanNumber(val, fallback = 0) {
