@@ -27,6 +27,7 @@ This repository contains custom widgets for StreamElements, formatted and struct
 ![Alt Text](./documentation/Pup-bubble-chat.png)
 ![Alt Text](./documentation/Walking-dog-ticker.png)
 ![Alt Text](./documentation/Walking-dog-ticker-filled.png)
+</p>
 
 All widgets are animated and tested in Streamelements. 
 
